@@ -1,0 +1,850 @@
+{
+  "summary": {
+    "evaluationType": "offline seeded-data route-planner evaluation",
+    "generatedAt": "2026-05-23T14:45:16.663Z",
+    "standsLoaded": 10,
+    "standRoutesLoaded": 31,
+    "cases": 7,
+    "validCases": 7,
+    "meanEvidenceRecall": 1,
+    "meanTrustScore": 94.99,
+    "baselineChangedByTrustRanking": 3,
+    "limitation": "This evaluates deterministic planner grounding and trust-aware ranking on seed data only; it does not measure live API latency, MySQL availability, or Gemini response quality."
+  },
+  "results": [
+    {
+      "id": "bandra_to_pali_hill_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Bandra Station West",
+        "Pali Hill"
+      ],
+      "matchedEvidence": [
+        "Bandra Station West",
+        "Pali Hill"
+      ],
+      "evidenceRecall": 1,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 34,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 2.09
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to Bandra Station West, take the shared auto towards Linking Road, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 15,
+        "totalTravelTimeMinutes": 16,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "Bandra Station West",
+          "routeId": 1,
+          "destination": "Linking Road",
+          "score": 25.83,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 1.3,
+          "walkFromDropKm": 0.38,
+          "ranking": {
+            "algorithm": "trust-aware-shared-auto-ranking-v1",
+            "compositeScore": 0.2254,
+            "trustScore": 96,
+            "riskFlags": [],
+            "weights": {
+              "time": 0.42,
+              "cost": 0.26,
+              "access": 0.18,
+              "trust": 0.14
+            }
+          }
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 25,
+        "totalTravelTimeMinutes": 14,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "Bandra Station West",
+          "routeId": 3,
+          "destination": "Pali Hill",
+          "score": 22.75,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 1.55,
+          "walkFromDropKm": 0,
+          "ranking": null
+        }
+      },
+      "baselineBest": {
+        "standName": "Bandra Station West",
+        "destination": "Pali Hill",
+        "score": 22.75,
+        "trustScore": 96
+      },
+      "trustAwareBest": {
+        "standName": "Bandra Station West",
+        "destination": "Linking Road",
+        "compositeScore": 0.2254,
+        "trustScore": 96,
+        "riskFlags": []
+      },
+      "topCandidateScores": [
+        {
+          "standName": "Bandra Station West",
+          "destination": "Linking Road",
+          "score": 25.83,
+          "compositeScore": 0.2254,
+          "trustScore": 96,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0.38,
+          "fare": 15,
+          "minutes": 16
+        },
+        {
+          "standName": "Bandra Station West",
+          "destination": "Pali Hill",
+          "score": 22.75,
+          "compositeScore": 0.3138,
+          "trustScore": 96,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0,
+          "fare": 25,
+          "minutes": 14
+        },
+        {
+          "standName": "Bandra Station West",
+          "destination": "Bandra Reclamation",
+          "score": 78.59,
+          "compositeScore": 0.4409,
+          "trustScore": 81.7,
+          "riskFlags": [
+            "long_walk_from_drop"
+          ],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 2.13,
+          "fare": 20,
+          "minutes": 46
+        }
+      ]
+    },
+    {
+      "id": "andheri_to_midc_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Andheri Station East",
+        "MIDC"
+      ],
+      "matchedEvidence": [
+        "Andheri Station East",
+        "MIDC"
+      ],
+      "evidenceRecall": 1,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 51,
+        "totalTravelTimeMinutes": 10,
+        "distanceKm": 3.06
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to Andheri Station East, take the shared auto towards Marol Naka, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 15,
+        "totalTravelTimeMinutes": 27,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 2,
+          "standName": "Andheri Station East",
+          "routeId": 5,
+          "destination": "Marol Naka",
+          "score": 46.22,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 2.7,
+          "walkFromDropKm": 1.16,
+          "ranking": {
+            "algorithm": "trust-aware-shared-auto-ranking-v1",
+            "compositeScore": 0.2551,
+            "trustScore": 91.4,
+            "riskFlags": [],
+            "weights": {
+              "time": 0.42,
+              "cost": 0.26,
+              "access": 0.18,
+              "trust": 0.14
+            }
+          }
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": 17,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 2,
+          "standName": "Andheri Station East",
+          "routeId": 4,
+          "destination": "MIDC",
+          "score": 24,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 2.27,
+          "walkFromDropKm": 0,
+          "ranking": null
+        }
+      },
+      "baselineBest": {
+        "standName": "Andheri Station East",
+        "destination": "MIDC",
+        "score": 24,
+        "trustScore": 96
+      },
+      "trustAwareBest": {
+        "standName": "Andheri Station East",
+        "destination": "Marol Naka",
+        "compositeScore": 0.2551,
+        "trustScore": 91.4,
+        "riskFlags": []
+      },
+      "topCandidateScores": [
+        {
+          "standName": "Andheri Station East",
+          "destination": "Marol Naka",
+          "score": 46.22,
+          "compositeScore": 0.2551,
+          "trustScore": 91.4,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1.16,
+          "fare": 15,
+          "minutes": 27
+        },
+        {
+          "standName": "Andheri Station East",
+          "destination": "MIDC",
+          "score": 24,
+          "compositeScore": 0.2566,
+          "trustScore": 96,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0,
+          "fare": 20,
+          "minutes": 17
+        },
+        {
+          "standName": "Andheri Station East",
+          "destination": "Chakala",
+          "score": 54.07,
+          "compositeScore": 0.3704,
+          "trustScore": 92.7,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1.03,
+          "fare": 25,
+          "minutes": 33
+        }
+      ]
+    },
+    {
+      "id": "dadar_to_shivaji_park_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Dadar TT",
+        "Shivaji Park"
+      ],
+      "matchedEvidence": [
+        "Dadar TT",
+        "Shivaji Park"
+      ],
+      "evidenceRecall": 1,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 36,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 2.25
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to Dadar TT (Tilak Nagar), take the shared auto towards Shivaji Park, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 15,
+        "totalTravelTimeMinutes": 14,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 3,
+          "standName": "Dadar TT (Tilak Nagar)",
+          "routeId": 7,
+          "destination": "Shivaji Park",
+          "score": 19.25,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 1.67,
+          "walkFromDropKm": 0,
+          "ranking": {
+            "algorithm": "trust-aware-shared-auto-ranking-v1",
+            "compositeScore": 0.2571,
+            "trustScore": 96,
+            "riskFlags": [],
+            "weights": {
+              "time": 0.42,
+              "cost": 0.26,
+              "access": 0.18,
+              "trust": 0.14
+            }
+          }
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 15,
+        "totalTravelTimeMinutes": 14,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 3,
+          "standName": "Dadar TT (Tilak Nagar)",
+          "routeId": 7,
+          "destination": "Shivaji Park",
+          "score": 19.25,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 1.67,
+          "walkFromDropKm": 0,
+          "ranking": null
+        }
+      },
+      "baselineBest": {
+        "standName": "Dadar TT (Tilak Nagar)",
+        "destination": "Shivaji Park",
+        "score": 19.25,
+        "trustScore": 96
+      },
+      "trustAwareBest": {
+        "standName": "Dadar TT (Tilak Nagar)",
+        "destination": "Shivaji Park",
+        "compositeScore": 0.2571,
+        "trustScore": 96,
+        "riskFlags": []
+      },
+      "topCandidateScores": [
+        {
+          "standName": "Dadar TT (Tilak Nagar)",
+          "destination": "Shivaji Park",
+          "score": 19.25,
+          "compositeScore": 0.2571,
+          "trustScore": 96,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0,
+          "fare": 15,
+          "minutes": 14
+        },
+        {
+          "standName": "Dadar TT (Tilak Nagar)",
+          "destination": "Mahim",
+          "score": 49.77,
+          "compositeScore": 0.3624,
+          "trustScore": 90.1,
+          "riskFlags": [
+            "long_walk_from_drop"
+          ],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1.29,
+          "fare": 15,
+          "minutes": 29
+        },
+        {
+          "standName": "Dadar TT (Tilak Nagar)",
+          "destination": "Parel",
+          "score": 73,
+          "compositeScore": 0.5106,
+          "trustScore": 83.8,
+          "riskFlags": [
+            "long_walk_from_drop"
+          ],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1.92,
+          "fare": 20,
+          "minutes": 43
+        }
+      ]
+    },
+    {
+      "id": "kurla_to_kurla_market_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Kurla Station West",
+        "Kurla Market"
+      ],
+      "matchedEvidence": [
+        "Kurla Station West",
+        "Kurla Market"
+      ],
+      "evidenceRecall": 1,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 23,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 0.88
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to Kurla Station West, take the shared auto towards Kurla Market, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 10,
+        "totalTravelTimeMinutes": 10,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 4,
+          "standName": "Kurla Station West",
+          "routeId": 11,
+          "destination": "Kurla Market",
+          "score": 13.5,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 0.65,
+          "walkFromDropKm": 0,
+          "ranking": {
+            "algorithm": "trust-aware-shared-auto-ranking-v1",
+            "compositeScore": 0.1508,
+            "trustScore": 96,
+            "riskFlags": [],
+            "weights": {
+              "time": 0.42,
+              "cost": 0.26,
+              "access": 0.18,
+              "trust": 0.14
+            }
+          }
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 10,
+        "totalTravelTimeMinutes": 10,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 4,
+          "standName": "Kurla Station West",
+          "routeId": 11,
+          "destination": "Kurla Market",
+          "score": 13.5,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 0.65,
+          "walkFromDropKm": 0,
+          "ranking": null
+        }
+      },
+      "baselineBest": {
+        "standName": "Kurla Station West",
+        "destination": "Kurla Market",
+        "score": 13.5,
+        "trustScore": 96
+      },
+      "trustAwareBest": {
+        "standName": "Kurla Station West",
+        "destination": "Kurla Market",
+        "compositeScore": 0.1508,
+        "trustScore": 96,
+        "riskFlags": []
+      },
+      "topCandidateScores": [
+        {
+          "standName": "Kurla Station West",
+          "destination": "Kurla Market",
+          "score": 13.5,
+          "compositeScore": 0.1508,
+          "trustScore": 96,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0,
+          "fare": 10,
+          "minutes": 10
+        },
+        {
+          "standName": "Kurla Station West",
+          "destination": "Nehru Nagar",
+          "score": 44.27,
+          "compositeScore": 0.3059,
+          "trustScore": 93,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1,
+          "fare": 15,
+          "minutes": 27
+        },
+        {
+          "standName": "Kurla Station West",
+          "destination": "Bandra Kurla Complex",
+          "score": 74.42,
+          "compositeScore": 0.5149,
+          "trustScore": 85.8,
+          "riskFlags": [
+            "long_walk_from_drop"
+          ],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1.72,
+          "fare": 25,
+          "minutes": 45
+        }
+      ]
+    },
+    {
+      "id": "malad_to_orlem_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Malad Station West",
+        "Orlem"
+      ],
+      "matchedEvidence": [
+        "Malad Station West",
+        "Orlem"
+      ],
+      "evidenceRecall": 1,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 23,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 1.05
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to Malad Station West, take the shared auto towards Malad Market, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 10,
+        "totalTravelTimeMinutes": 22,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 7,
+          "standName": "Malad Station West",
+          "routeId": 21,
+          "destination": "Malad Market",
+          "score": 36.91,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 0.18,
+          "walkFromDropKm": 0.95,
+          "ranking": {
+            "algorithm": "trust-aware-shared-auto-ranking-v1",
+            "compositeScore": 0.2184,
+            "trustScore": 93.5,
+            "riskFlags": [],
+            "weights": {
+              "time": 0.42,
+              "cost": 0.26,
+              "access": 0.18,
+              "trust": 0.14
+            }
+          }
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 15,
+        "totalTravelTimeMinutes": 12,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 7,
+          "standName": "Malad Station West",
+          "routeId": 20,
+          "destination": "Orlem",
+          "score": 17.25,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 0.77,
+          "walkFromDropKm": 0,
+          "ranking": null
+        }
+      },
+      "baselineBest": {
+        "standName": "Malad Station West",
+        "destination": "Orlem",
+        "score": 17.25,
+        "trustScore": 96
+      },
+      "trustAwareBest": {
+        "standName": "Malad Station West",
+        "destination": "Malad Market",
+        "compositeScore": 0.2184,
+        "trustScore": 93.5,
+        "riskFlags": []
+      },
+      "topCandidateScores": [
+        {
+          "standName": "Malad Station West",
+          "destination": "Malad Market",
+          "score": 36.91,
+          "compositeScore": 0.2184,
+          "trustScore": 93.5,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0.95,
+          "fare": 10,
+          "minutes": 22
+        },
+        {
+          "standName": "Malad Station West",
+          "destination": "Orlem",
+          "score": 17.25,
+          "compositeScore": 0.2342,
+          "trustScore": 96,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0,
+          "fare": 15,
+          "minutes": 12
+        },
+        {
+          "standName": "Malad Station West",
+          "destination": "Goregaon Link Road",
+          "score": 84.53,
+          "compositeScore": 0.4707,
+          "trustScore": 79.2,
+          "riskFlags": [
+            "long_walk_from_drop"
+          ],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 2.38,
+          "fare": 20,
+          "minutes": 49
+        }
+      ]
+    },
+    {
+      "id": "powai_to_iit_bombay_night_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Powai Market",
+        "IIT Bombay"
+      ],
+      "matchedEvidence": [
+        "Powai Market",
+        "IIT Bombay"
+      ],
+      "evidenceRecall": 1,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 43,
+        "totalTravelTimeMinutes": 9,
+        "distanceKm": 2.59
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to Powai Market, take the shared auto towards IIT Bombay, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": 14,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 9,
+          "standName": "Powai Market",
+          "routeId": 27,
+          "destination": "IIT Bombay",
+          "score": 21,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 1.92,
+          "walkFromDropKm": 0,
+          "ranking": {
+            "algorithm": "trust-aware-shared-auto-ranking-v1",
+            "compositeScore": 0.2775,
+            "trustScore": 96,
+            "riskFlags": [],
+            "weights": {
+              "time": 0.42,
+              "cost": 0.26,
+              "access": 0.18,
+              "trust": 0.14
+            }
+          }
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": 14,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 9,
+          "standName": "Powai Market",
+          "routeId": 27,
+          "destination": "IIT Bombay",
+          "score": 21,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 1.92,
+          "walkFromDropKm": 0,
+          "ranking": null
+        }
+      },
+      "baselineBest": {
+        "standName": "Powai Market",
+        "destination": "IIT Bombay",
+        "score": 21,
+        "trustScore": 96
+      },
+      "trustAwareBest": {
+        "standName": "Powai Market",
+        "destination": "IIT Bombay",
+        "compositeScore": 0.2775,
+        "trustScore": 96,
+        "riskFlags": []
+      },
+      "topCandidateScores": [
+        {
+          "standName": "Powai Market",
+          "destination": "IIT Bombay",
+          "score": 21,
+          "compositeScore": 0.2775,
+          "trustScore": 96,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0,
+          "fare": 20,
+          "minutes": 14
+        },
+        {
+          "standName": "Powai Market",
+          "destination": "Hiranandani",
+          "score": 64.15,
+          "compositeScore": 0.4198,
+          "trustScore": 73.7,
+          "riskFlags": [
+            "long_walk_from_drop",
+            "night_first_last_mile"
+          ],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1.83,
+          "fare": 15,
+          "minutes": 37
+        },
+        {
+          "standName": "Powai Market",
+          "destination": "Chandivali",
+          "score": 117.32,
+          "compositeScore": 0.73,
+          "trustScore": 60,
+          "riskFlags": [
+            "long_walk_from_drop",
+            "night_first_last_mile"
+          ],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 3.55,
+          "fare": 25,
+          "minutes": 66
+        }
+      ]
+    },
+    {
+      "id": "ghatkopar_to_vikhroli_night_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Ghatkopar Station East",
+        "Vikhroli"
+      ],
+      "matchedEvidence": [
+        "Ghatkopar Station East",
+        "Vikhroli"
+      ],
+      "evidenceRecall": 1,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 57,
+        "totalTravelTimeMinutes": 11,
+        "distanceKm": 3.39
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to Ghatkopar Station East, take the shared auto towards Vikhroli, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 25,
+        "totalTravelTimeMinutes": 22,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 5,
+          "standName": "Ghatkopar Station East",
+          "routeId": 16,
+          "destination": "Vikhroli",
+          "score": 30.75,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 2.51,
+          "walkFromDropKm": 0,
+          "ranking": {
+            "algorithm": "trust-aware-shared-auto-ranking-v1",
+            "compositeScore": 0.3957,
+            "trustScore": 96,
+            "riskFlags": [],
+            "weights": {
+              "time": 0.42,
+              "cost": 0.26,
+              "access": 0.18,
+              "trust": 0.14
+            }
+          }
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 25,
+        "totalTravelTimeMinutes": 22,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 5,
+          "standName": "Ghatkopar Station East",
+          "routeId": 16,
+          "destination": "Vikhroli",
+          "score": 30.75,
+          "walkToStandKm": 0,
+          "sharedRouteKm": 2.51,
+          "walkFromDropKm": 0,
+          "ranking": null
+        }
+      },
+      "baselineBest": {
+        "standName": "Ghatkopar Station East",
+        "destination": "Vikhroli",
+        "score": 30.75,
+        "trustScore": 96
+      },
+      "trustAwareBest": {
+        "standName": "Ghatkopar Station East",
+        "destination": "Vikhroli",
+        "compositeScore": 0.3957,
+        "trustScore": 96,
+        "riskFlags": []
+      },
+      "topCandidateScores": [
+        {
+          "standName": "Ghatkopar Station East",
+          "destination": "Vikhroli",
+          "score": 30.75,
+          "compositeScore": 0.3957,
+          "trustScore": 96,
+          "riskFlags": [],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0,
+          "fare": 25,
+          "minutes": 22
+        },
+        {
+          "standName": "Ghatkopar Station East",
+          "destination": "Asalpha",
+          "score": 88.81,
+          "compositeScore": 0.6261,
+          "trustScore": 61.7,
+          "riskFlags": [
+            "long_walk_from_drop",
+            "night_first_last_mile"
+          ],
+          "walkToStandKm": 0,
+          "walkFromDropKm": 2.71,
+          "fare": 15,
+          "minutes": 51
+        },
+        {
+          "standName": "Vikhroli Station West",
+          "destination": "Vikhroli Park Site",
+          "score": 109.86,
+          "compositeScore": 0.7774,
+          "trustScore": 58.1,
+          "riskFlags": [
+            "long_walk_to_stand",
+            "night_first_last_mile"
+          ],
+          "walkToStandKm": 2.51,
+          "walkFromDropKm": 0.89,
+          "fare": 20,
+          "minutes": 62
+        }
+      ]
+    }
+  ]
+}

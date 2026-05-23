@@ -4,7 +4,7 @@
   "description": "",
   "main": "map.js",
   "scripts": {
-    "test": "node evaluation/test_route_planner_service.js && node evaluation/run_offline_route_evaluation.js"
+    "test": "node evaluation/test_route_planner_service.js && node evaluation/run_offline_route_evaluation.js && node evaluation/run_ieee_evidence_analysis.js"
   },
   "repository": {
     "type": "git",

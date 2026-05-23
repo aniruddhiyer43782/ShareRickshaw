@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" viewBox="0 0 880 560">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="440" y="24" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700">Trust Score vs Composite Route Score</text>
+  <line x1="82" y1="484" x2="846" y2="484" stroke="#222"/>
+  <line x1="82" y1="42" x2="82" y2="484" stroke="#222"/>
+  <text x="440" y="534" text-anchor="middle" font-family="Arial" font-size="14">Trust score (higher is better)</text>
+  <text transform="translate(24 280) rotate(-90)" text-anchor="middle" font-family="Arial" font-size="14">Composite score (lower is better)</text>
+  <text x="82" y="508" text-anchor="middle" font-family="Arial" font-size="12">58.1</text>
+  <text x="846" y="508" text-anchor="middle" font-family="Arial" font-size="12">96.0</text>
+  <text x="72" y="488" text-anchor="end" font-family="Arial" font-size="12">0.15</text>
+  <text x="72" y="46" text-anchor="end" font-family="Arial" font-size="12">0.78</text>
+  <circle cx="846.0" cy="431.4" r="6" fill="#227A4B"><title>bandra_to_pali_hill_seed: Linking Road</title></circle>
+  <circle cx="846.0" cy="369.0" r="6" fill="#227A4B"><title>bandra_to_pali_hill_seed: Pali Hill</title></circle>
+  <circle cx="557.7" cy="279.4" r="6" fill="#C43B3B"><title>bandra_to_pali_hill_seed: Bandra Reclamation</title></circle>
+  <circle cx="753.3" cy="410.4" r="6" fill="#227A4B"><title>andheri_to_midc_seed: Marol Naka</title></circle>
+  <circle cx="846.0" cy="409.4" r="6" fill="#227A4B"><title>andheri_to_midc_seed: MIDC</title></circle>
+  <circle cx="779.5" cy="329.1" r="6" fill="#227A4B"><title>andheri_to_midc_seed: Chakala</title></circle>
+  <circle cx="846.0" cy="409.0" r="6" fill="#227A4B"><title>dadar_to_shivaji_park_seed: Shivaji Park</title></circle>
+  <circle cx="727.1" cy="334.7" r="6" fill="#C43B3B"><title>dadar_to_shivaji_park_seed: Mahim</title></circle>
+  <circle cx="600.1" cy="230.2" r="6" fill="#C43B3B"><title>dadar_to_shivaji_park_seed: Parel</title></circle>
+  <circle cx="846.0" cy="484.0" r="6" fill="#227A4B"><title>kurla_to_kurla_market_seed: Kurla Market</title></circle>
+  <circle cx="785.5" cy="374.6" r="6" fill="#227A4B"><title>kurla_to_kurla_market_seed: Nehru Nagar</title></circle>
+  <circle cx="640.4" cy="227.2" r="6" fill="#C43B3B"><title>kurla_to_kurla_market_seed: Bandra Kurla Complex</title></circle>
+  <circle cx="795.6" cy="436.3" r="6" fill="#227A4B"><title>malad_to_orlem_seed: Malad Market</title></circle>
+  <circle cx="846.0" cy="425.2" r="6" fill="#227A4B"><title>malad_to_orlem_seed: Orlem</title></circle>
+  <circle cx="507.3" cy="258.3" r="6" fill="#C43B3B"><title>malad_to_orlem_seed: Goregaon Link Road</title></circle>
+  <circle cx="846.0" cy="394.6" r="6" fill="#227A4B"><title>powai_to_iit_bombay_night_seed: IIT Bombay</title></circle>
+  <circle cx="396.5" cy="294.2" r="6" fill="#C43B3B"><title>powai_to_iit_bombay_night_seed: Hiranandani</title></circle>
+  <circle cx="120.3" cy="75.4" r="6" fill="#C43B3B"><title>powai_to_iit_bombay_night_seed: Chandivali</title></circle>
+  <circle cx="846.0" cy="311.2" r="6" fill="#227A4B"><title>ghatkopar_to_vikhroli_night_seed: Vikhroli</title></circle>
+  <circle cx="154.6" cy="148.7" r="6" fill="#C43B3B"><title>ghatkopar_to_vikhroli_night_seed: Asalpha</title></circle>
+  <circle cx="82.0" cy="42.0" r="6" fill="#C43B3B"><title>ghatkopar_to_vikhroli_night_seed: Vikhroli Park Site</title></circle>
+  <rect x="660" y="54" width="170" height="56" fill="#fff" stroke="#ccc"/>
+  <circle cx="680" cy="76" r="6" fill="#227A4B"/>
+  <text x="694" y="80" font-family="Arial" font-size="12">No risk flags</text>
+  <circle cx="680" cy="98" r="6" fill="#C43B3B"/>
+  <text x="694" y="102" font-family="Arial" font-size="12">One or more flags</text>
+</svg>

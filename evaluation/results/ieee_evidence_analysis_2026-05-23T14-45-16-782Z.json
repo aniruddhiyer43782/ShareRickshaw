@@ -1,0 +1,180 @@
+{
+  "source": "evaluation\\results\\offline_route_eval_2026-05-23T14-45-16-694Z.json",
+  "cases": 7,
+  "topCandidatePoints": 21,
+  "fareSavings": {
+    "min": 0.5349,
+    "max": 0.7059,
+    "mean": 0.5821,
+    "std": 0.0522
+  },
+  "coverage": {
+    "Zero access walk candidate": "7/7",
+    "Non-zero egress in selected shared-auto route": "3/7",
+    "Night travel": "2/7",
+    "Long egress candidate flagged (>1.2 km)": "6/7",
+    "Ranking changed by trust-aware composite": "3/7",
+    "Distinct Mumbai localities represented": "7/7"
+  },
+  "sensitivitySweep": [
+    {
+      "variedWeight": "time",
+      "value": 0,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "time",
+      "value": 0.1,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "time",
+      "value": 0.2,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "time",
+      "value": 0.3,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "time",
+      "value": 0.4,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "time",
+      "value": 0.5,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "cost",
+      "value": 0,
+      "changedTop1Cases": 1,
+      "changedCaseIds": [
+        "bandra_to_pali_hill_seed"
+      ]
+    },
+    {
+      "variedWeight": "cost",
+      "value": 0.1,
+      "changedTop1Cases": 1,
+      "changedCaseIds": [
+        "bandra_to_pali_hill_seed"
+      ]
+    },
+    {
+      "variedWeight": "cost",
+      "value": 0.2,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "cost",
+      "value": 0.3,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "cost",
+      "value": 0.4,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "cost",
+      "value": 0.5,
+      "changedTop1Cases": 1,
+      "changedCaseIds": [
+        "malad_to_orlem_seed"
+      ]
+    },
+    {
+      "variedWeight": "access",
+      "value": 0,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "access",
+      "value": 0.1,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "access",
+      "value": 0.2,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "access",
+      "value": 0.3,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "access",
+      "value": 0.4,
+      "changedTop1Cases": 1,
+      "changedCaseIds": [
+        "bandra_to_pali_hill_seed"
+      ]
+    },
+    {
+      "variedWeight": "access",
+      "value": 0.5,
+      "changedTop1Cases": 1,
+      "changedCaseIds": [
+        "bandra_to_pali_hill_seed"
+      ]
+    },
+    {
+      "variedWeight": "trust",
+      "value": 0,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "trust",
+      "value": 0.1,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "trust",
+      "value": 0.2,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "trust",
+      "value": 0.3,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "trust",
+      "value": 0.4,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    },
+    {
+      "variedWeight": "trust",
+      "value": 0.5,
+      "changedTop1Cases": 0,
+      "changedCaseIds": []
+    }
+  ],
+  "artifacts": {
+    "scatterCsv": "evaluation\\results\\trust_composite_scatter_2026-05-23T14-45-16-782Z.csv",
+    "scatterSvg": "docs\\figures\\trust_composite_scatter_2026-05-23T14-45-16-782Z.svg",
+    "summaryMarkdown": "evaluation\\results\\ieee_evidence_summary_2026-05-23T14-45-16-782Z.md"
+  }
+}

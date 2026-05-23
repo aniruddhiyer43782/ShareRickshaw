@@ -57,6 +57,7 @@ Do not invent performance or accuracy numbers. Use:
 
 ```powershell
 node evaluation\run_offline_route_evaluation.js
+node evaluation\run_ieee_evidence_analysis.js
 node evaluation\run_api_latency.js --token YOUR_JWT --iterations 100
 node evaluation\run_route_cases.js --token YOUR_JWT
 ```
@@ -67,6 +68,9 @@ Latest offline seeded-data result:
 - mean evidence recall: 1.0
 - mean trust score: 94.99
 - trust-aware ranking changed the baseline top candidate in 3 cases
-- file: `evaluation/results/offline_route_eval_2026-05-23T12-02-24-595Z.json`
+- selected shared-auto options showed 53% to 71% fare savings over direct-auto estimates, with 58% mean saving
+- file: `evaluation/results/offline_route_eval_2026-05-23T14-45-16-694Z.json`
+- IEEE evidence summary: `evaluation/results/ieee_evidence_summary_2026-05-23T14-45-16-782Z.md`
+- scatter figure: `docs/figures/trust_composite_scatter_2026-05-23T14-45-16-782Z.svg`
 
 Label this honestly as offline seeded-data evaluation. Then score routes with `evaluation/route_quality_rubric.md`, fill ALPR results in `evaluation/alpr_results_template.csv`, and use `evaluation/user_study_form.md` for a small formative user study.
