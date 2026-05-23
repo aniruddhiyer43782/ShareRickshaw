@@ -1,0 +1,114 @@
+# IEEE Paper Rewrite Pack: ShareRickshaw
+
+## Safer title
+
+ShareRickshaw: A Grounded Web Prototype for Shared Autorickshaw Booking, Safety, and AI-Assisted Multimodal Route Planning in Mumbai
+
+## Corrected abstract draft
+
+Shared autorickshaws provide low-cost last-mile mobility in Mumbai, but their fixed-corridor operations remain largely offline, making route discovery, fare transparency, passenger safety, and driver coordination difficult to manage digitally. This paper presents ShareRickshaw, a full-stack web prototype for shared autorickshaw management. The system integrates JWT-based passenger and driver authentication, MySQL-backed stand and route registries, Socket.IO booking notifications, browser-based maps, fare estimation, emergency SOS alerts, AI-assisted license-plate extraction, and a multimodal route planner. The central technical contribution is a grounded route-planning pipeline that combines deterministic stand-route scoring with structured large-language-model generation and post-generation validation. The planner injects live stand and fare data into the prompt, constrains output to a JSON schema, verifies generated shared-auto steps against known stands and destinations, and falls back to deterministic routing when the AI response is unavailable or insufficiently grounded. This design addresses a key challenge in informal transit digitisation: generating usable route suggestions without relying on complete GTFS-style feeds. We describe the system architecture, data model, route-planning algorithm, and an evaluation protocol for measuring API latency, route-grounding accuracy, ALPR accuracy, and user-perceived usefulness. The prototype demonstrates a practical path toward evidence-driven digitisation of informal paratransit in Indian cities.
+
+## Main contribution wording
+
+This paper makes four contributions:
+
+1. A working browser-based prototype for shared autorickshaw booking, driver coordination, stand discovery, fare estimation, and passenger safety.
+2. A grounded structured multimodal planning pipeline for informal fixed-route transport, implemented through live database injection, deterministic stand-route scoring, schema-constrained LLM output, validation, and fallback routing.
+3. A safety workflow that combines emergency contacts, SOS email alerts, night-location updates, and AI-assisted license-plate extraction.
+4. A reproducible evaluation protocol and scripts for measuring latency, route-grounding accuracy, ALPR accuracy, and formative user feedback without fabricating results.
+
+## Algorithm 1: Grounded Structured Multimodal Planning
+
+Input: start coordinate S, destination coordinate D, stand database B, optional LLM service L
+
+Output: ranked route options R
+
+1. Validate S and D against supported Mumbai prototype bounds.
+2. Fetch all stands and fixed routes from B.
+3. Estimate a direct-auto option using corrected geodesic distance and a prototype fare heuristic.
+4. For each stand-route pair:
+   - compute walking distance from S to stand;
+   - compute shared-auto route distance and stored fare/time;
+   - compute walking distance from route destination to D;
+   - score candidate by time, fare, and access/egress distance.
+5. Add the best deterministic shared-auto candidate to R.
+6. Construct a structured prompt containing S, D, allowed modes, and the live stand-route registry.
+7. Request JSON output from L using the route schema.
+8. Validate returned steps against allowed modes, known stand names, known route destinations, and total cost/time consistency.
+9. If validation passes, add the grounded AI route to R; otherwise add the deterministic fallback.
+10. Return R with evidence metadata.
+
+## What is actually novel enough to argue
+
+The novelty is not that the app uses Gemini. The defensible novelty is the control layer around Gemini:
+
+- informal transport data is incomplete and not available as GTFS;
+- the system creates a temporary route knowledge base from the live MySQL stand registry;
+- the LLM is constrained to typed JSON instead of free text;
+- a deterministic validator checks whether generated shared-auto steps are grounded in known stands and destinations;
+- the system returns fallback routes when the LLM fails or hallucinates.
+
+This is a real, explainable approach for LLM use in informal transit systems.
+
+## Evaluation section template
+
+Do not include numbers until measured.
+
+### Experimental Setup
+
+The prototype was deployed on a local Windows workstation running Node.js, Express, Socket.IO, and MySQL. The database contained N stands and M fixed-route entries at the time of evaluation. Frontend tests were conducted in Chrome over localhost and, where specified, over a local Wi-Fi network. Gemini-backed tests used the configured Gemini API key; deterministic fallback tests were run with the API key disabled.
+
+### REST API Latency
+
+Latency was measured using `evaluation/run_api_latency.js` with 100 requests per endpoint after one warm-up run. The reported metrics are median and p95 latency from the generated CSV file.
+
+### Route Grounding Accuracy
+
+Route quality was measured over K origin-destination pairs using `evaluation/run_route_cases.js`. Each route was scored using the rubric in `evaluation/route_quality_rubric.md`, including station validity, stand grounding, destination grounding, cost plausibility, time plausibility, and interpretability.
+
+### ALPR Accuracy
+
+AI-assisted license-plate extraction was evaluated on K images of Maharashtra autorickshaw plates captured under daylight, fluorescent, and low-light conditions. Exact-match accuracy and character-level error rate were calculated using `evaluation/alpr_results_template.csv`.
+
+### Formative User Study
+
+A small formative study with K participants measured ease of route discovery, fare clarity, perceived usefulness of safety features, and confidence in AI-assisted route suggestions using a five-point Likert scale.
+
+## Claims to rewrite immediately
+
+- Replace "RS-256" with "JWT signed using the project secret; the current jsonwebtoken configuration uses the library default unless explicitly configured."
+- Replace "backend OSRM route query" with "frontend OSRM visualization and backend deterministic route estimate."
+- Replace exact performance/accuracy numbers with placeholders until experiments are run.
+- Replace "production-ready" with "working prototype" or "controlled pilot prototype."
+- Replace "RTO-certified fare" with "database fare lookup / prototype estimate" unless official tariff integration is added.
+
+## Suggested tables
+
+### Table I: System Modules
+
+| Module | Implementation | Evidence |
+|---|---|---|
+| Authentication | JWT + bcrypt | auth controller and middleware |
+| Booking | REST + Socket.IO | booking controller and socket emitter |
+| Stand registry | MySQL stands/routes | schema and seed data |
+| Route planner | deterministic scoring + Gemini + validator | routePlannerService |
+| Safety | SOS, night tracking, ALPR | safety controller and Gemini service |
+
+### Table II: Route Planner Evidence Fields
+
+| Field | Purpose |
+|---|---|
+| planner | identifies deterministic, Gemini, or fallback route source |
+| groundingScore | quantifies validation success for AI route |
+| validationWarnings | lists hallucination or total-mismatch warnings |
+| standName / routeId | ties route option to database evidence |
+| limitations | states prototype assumptions |
+
+## Remaining real work before submission
+
+1. Run the API latency script and cite CSV output.
+2. Run at least 10 route cases and score them manually.
+3. Collect at least 20 ALPR test images with ground truth.
+4. Get 5-10 user-study responses.
+5. Verify every citation in Google Scholar / IEEE Xplore.
+6. Insert real diagrams from the Mermaid files in `docs/`.

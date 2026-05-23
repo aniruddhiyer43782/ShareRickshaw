@@ -1,24 +1,54 @@
+require('dotenv').config();
+
 const express = require("express");
 const cors = require("cors");
-// const bodyParser = require('body-parser'); // Body-parser is included in Express now
 const http = require("http");
 const socketIo = require("socket.io");
 require("dotenv").config();
 
-// Import database connection (establishes connection on load)
+console.log("🚀 Starting Mumbai Share Auto backend...");
+
+// --- Initialize Express app ---
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: [
+      "http://localhost:8000",
+      "http://127.0.0.1:8000",
+      "http://localhost:5500",
+      "http://127.0.0.1:5500",
+    ],
+    credentials: true,
+  },
+});
+
+// --- Middleware setup ---
+app.use(
+  cors({
+    origin: [
+      "http://localhost:8000",
+      "http://127.0.0.1:8000",
+      "http://localhost:5500",
+      "http://127.0.0.1:5500",
+    ],
+    credentials: true,
+  })
+);
+
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+// Request logger
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
+// --- Database connection ---
 require("./config/database");
 
-// Import route modules
-const authRoutes = require("./routes/auth");
-const profileRoutes = require("./routes/profile");
-const standsRoutes = require("./routes/stands");
-const routesRoutes = require("./routes/routes");
-const bookingsRoutes = require("./routes/bookings");
-console.log("Server: Loading safety routes...");
-const safetyRoutes = require("./routes/safety");
-console.log("Server: Safety routes loaded:", typeof safetyRoutes);
-
-// Import middleware and services
+// --- Socket setup ---
 const socketAuth = require("./middleware/socketAuth");
 const {
   setIoInstance,
@@ -26,78 +56,42 @@ const {
   unregisterUserSocket,
 } = require("./services/socketEmitter");
 
-// Initialize Express app
-const app = express();
-
-// Create HTTP server for socket.io
-const server = http.createServer(app);
-
-// Initialize socket.io
-const io = socketIo(server, {
-  cors: {
-    origin: [
-      "http://localhost:8000",
-      "http://127.0.0.1:8000",
-      "http://localhost:5500",
-    ],
-    credentials: true,
-  },
-});
-
-// Set io instance in socketEmitter service
 setIoInstance(io);
-
-// Middleware
-app.use(
-  cors({
-    origin: [
-      "http://localhost:8000",
-      "http://127.0.0.1:8000",
-      "http://localhost:5500",
-    ],
-    credentials: true,
-  })
-);
-
-// FIX: Increase JSON body limit to handle large base64 image data
-app.use(express.json({ limit: "5mb" })); // Allow up to 5MB JSON payload (base64 image)
-
-// The old body-parser logic below is now handled by express.json above,
-// but keeping the urlencoded line if it was used for other forms
-app.use(express.urlencoded({ extended: true }));
-
-// Request logging (development)
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
-  next();
-});
-
-// WebSocket connection handling
 io.use(socketAuth);
 
 io.on("connection", (socket) => {
   const userId = socket.userId;
   const userRole = socket.userRole;
   console.log(`User ${userId} (${userRole}) connected via WebSocket`);
-
-  // Register user socket
   registerUserSocket(userId, socket);
 
   socket.on("disconnect", () => {
-    console.log(`User ${userId} disconnected from WebSocket`);
+    console.log(`User ${userId} disconnected`);
     unregisterUserSocket(userId, socket.id);
   });
 });
 
-// API Routes
+// --- Import route modules ---
+const authRoutes = require("./routes/auth");
+const profileRoutes = require("./routes/profile");
+const standsRoutes = require("./routes/stands");
+const routesRoutes = require("./routes/routes");
+
+const bookingsRoutes = require("./routes/bookings");
+const safetyRoutes = require("./routes/safety");
+const fareRoutes = require("./routes/fare"); // ← your AI route
+
+// --- API Routes ---
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/stands", standsRoutes);
 app.use("/api/routes", routesRoutes);
 app.use("/api/bookings", bookingsRoutes);
 app.use("/api/safety", safetyRoutes);
+app.use("/api/fare", fareRoutes);
+console.log("✅ AI + RTO Fare route initialized");
 
-// Driver status routes
+// --- Driver status routes ---
 const bookingsCtrl = require("./controllers/bookingsController");
 const authMiddleware = require("./middleware/auth");
 app.post(
@@ -111,8 +105,12 @@ app.post(
   bookingsCtrl.updateDriverLocation
 );
 
-// Root endpoint
-app.get("/", (req, res) => {
+// --- Serve frontend static files ---
+const path = require("path");
+app.use(express.static(path.join(__dirname, "../")));
+
+// --- Root endpoint ---
+app.get("/api", (req, res) => {
   res.json({
     message: "Mumbai Share Auto API",
     version: "1.0.0",
@@ -123,20 +121,18 @@ app.get("/", (req, res) => {
       routes: "/api/routes",
       bookings: "/api/bookings",
       safety: "/api/safety",
+      fare: "/api/fare",
       driverStatus: "/api/driver-status",
     },
   });
 });
 
-// 404 handler
+// --- 404 handler ---
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Endpoint not found",
-  });
+  res.status(404).json({ success: false, message: "Endpoint not found" });
 });
 
-// Error handler
+// --- Global error handler ---
 app.use((err, req, res, next) => {
   console.error("Server error:", err);
   res.status(500).json({
@@ -145,10 +141,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// --- Start the server ---
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`API available at http://localhost:${PORT}/api`);
-  console.log(`WebSocket available on same port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🌐 API available at http://localhost:${PORT}/api`);
+  console.log(`💬 WebSocket available on same port ${PORT}`);
 });

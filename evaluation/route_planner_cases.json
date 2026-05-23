@@ -1,0 +1,26 @@
+[
+  {
+    "id": "andheri_to_malad",
+    "startLat": 19.1197,
+    "startLng": 72.8464,
+    "endLat": 19.1869,
+    "endLng": 72.8486,
+    "expectedEvidence": ["Western Line", "Andheri", "Malad"]
+  },
+  {
+    "id": "bandra_to_pali_hill",
+    "startLat": 19.0544,
+    "startLng": 72.8406,
+    "endLat": 19.0630,
+    "endLng": 72.8290,
+    "expectedEvidence": ["Bandra Station West", "Pali Hill"]
+  },
+  {
+    "id": "ghatkopar_to_asalpha",
+    "startLat": 19.0865,
+    "startLng": 72.9081,
+    "endLat": 19.0800,
+    "endLng": 72.9150,
+    "expectedEvidence": ["Ghatkopar Station East", "Asalpha"]
+  }
+]

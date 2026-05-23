@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ShareRide - Smart Mobility</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"
+    />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="ui">
+      <!-- Sidebar / Control Panel -->
+      <div id="leftPane">
+        <div class="app-header">
+          <div class="logo-area">
+            <i class="fas fa-route logo-icon"></i>
+            <h1>ShareRide</h1>
+          </div>
+<a href="http://localhost:3000/index.html" class="back-link">
+    <i class="fas fa-arrow-left"></i> Home
+</a>
+
+        </div>
+
+        <div class="scroll-content">
+          <!-- Authentication Section -->
+          <div id="auth" class="panel-section">
+            <h3><i class="fas fa-user-circle"></i> Account</h3>
+            <div class="input-group">
+              <input id="name" placeholder="Full Name" class="form-input" />
+              <input id="phone" placeholder="Phone Number" class="form-input" />
+              <div class="select-wrapper">
+                <select id="role" class="form-input">
+                  <option value="passenger">Passenger</option>
+                  <option value="driver">Driver</option>
+                </select>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button id="registerBtn" class="btn btn-primary">Register</button>
+              <button id="loginBtn" class="btn btn-outline">Login</button>
+            </div>
+            <div id="userInfo" class="status-badge hidden"></div>
+          </div>
+
+          <!-- Driver Controls -->
+          <div id="driverControls" style="display: none" class="panel-section">
+            <div class="section-header">
+              <h3><i class="fas fa-taxi"></i> Driver Console</h3>
+              <span class="live-indicator"><span class="dot"></span> Live</span>
+            </div>
+
+            <p id="liveDriverCount" class="info-text">Active Drivers: 0</p>
+
+            <!-- Custom Route -->
+            <div class="control-card">
+              <h4>1. Custom Route</h4>
+              <p id="routeSelectMsg" class="hint-text">
+                Select start/end points on map
+              </p>
+
+              <input
+                id="routeNameInput"
+                placeholder="Route Name"
+                value="My Custom Route"
+                class="form-input"
+              />
+
+              <div
+                id="routeCoordsDisplay"
+                class="coords-box"
+                style="display: none"
+              >
+                <div class="coord-row">
+                  <span class="label">Start:</span>
+                  <span id="startCoord" class="val">N/A</span>
+                </div>
+                <div class="coord-row">
+                  <span class="label">End:</span>
+                  <span id="endCoord" class="val">N/A</span>
+                </div>
+              </div>
+
+              <button
+                id="startRouteSelectionBtn"
+                class="btn btn-secondary btn-sm"
+              >
+                Start Selection
+              </button>
+              <button
+                id="createCustomRouteBtn"
+                disabled
+                class="btn btn-success btn-full"
+              >
+                Create Route
+              </button>
+            </div>
+
+            <!-- Demo Route -->
+            <div class="control-card">
+              <h4>2. Quick Actions</h4>
+              <button id="createDemoRoute" class="btn btn-outline btn-sm">
+                Load Demo Route
+              </button>
+            </div>
+
+            <!-- Simulation -->
+            <div class="control-card">
+              <h4>3. Simulation & Capacity</h4>
+
+              <div class="passenger-counter">
+                <button id="decrementPassengerBtn" class="counter-btn minus">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <div class="counter-display">
+                  <span id="currentPassengerDisplay">0</span>
+                  <span class="label">Passengers</span>
+                </div>
+                <button id="incrementPassengerBtn" class="counter-btn plus">
+                  <i class="fas fa-plus"></i>
+                </button>
+                <input type="hidden" id="passengerCount" value="0" />
+              </div>
+
+              <button
+                id="updateLocationBtn"
+                class="btn btn-primary btn-full pulse-on-active"
+              >
+                <i class="fas fa-play"></i> Start Simulation
+              </button>
+              <div id="driverMsg" class="msg-box"></div>
+            </div>
+          </div>
+
+          <!-- Passenger Controls -->
+          <div
+            id="passengerControls"
+            style="display: none"
+            class="panel-section"
+          >
+            <div class="section-header">
+              <h3><i class="fas fa-user"></i> Passenger Console</h3>
+            </div>
+
+            <div class="control-card">
+              <p class="hint-text">
+                Click map to set <b>Pickup</b> and <b>Dropoff</b> points.
+              </p>
+              <button id="bookBtn" disabled class="btn btn-primary btn-full">
+                Request Ride
+              </button>
+              <div id="passengerMsg" class="msg-box"></div>
+            </div>
+          </div>
+
+          <!-- Bookings List -->
+          <div class="panel-section">
+            <div class="section-header">
+              <h3><i class="fas fa-list-alt"></i> Recent Bookings</h3>
+              <button id="refreshBookings" class="icon-btn">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+            <div id="bookingsList" class="bookings-container">
+              <!-- Bookings will be injected here via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Container -->
+      <div id="map"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

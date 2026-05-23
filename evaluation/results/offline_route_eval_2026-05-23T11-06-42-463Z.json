@@ -1,0 +1,404 @@
+{
+  "summary": {
+    "evaluationType": "offline seeded-data route-planner evaluation",
+    "generatedAt": "2026-05-23T11:06:42.448Z",
+    "standsLoaded": 10,
+    "standRoutesLoaded": 21,
+    "cases": 5,
+    "validCases": 5,
+    "meanEvidenceRecall": 0,
+    "limitation": "This evaluates deterministic planner grounding on seed data only; it does not measure live API latency, MySQL availability, or Gemini response quality."
+  },
+  "results": [
+    {
+      "id": "bandra_to_pali_hill_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Bandra Station West",
+        "Pali Hill"
+      ],
+      "matchedEvidence": [],
+      "evidenceRecall": 0,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 34,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 2.09
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to name, take the shared auto towards Bandra Reclamation, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 2.13
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 2.13
+        }
+      },
+      "topCandidateScores": [
+        {
+          "standName": "name",
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 2.13,
+          "fare": 20,
+          "minutes": null
+        },
+        {
+          "standName": "name",
+          "destination": "Pali Hill",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 0,
+          "fare": 25,
+          "minutes": null
+        },
+        {
+          "standName": "Dadar TT (Tilak Nagar)",
+          "destination": "Mahim",
+          "score": 193.1,
+          "walkToStandKm": 4.07,
+          "walkFromDropKm": 2.75,
+          "fare": 15,
+          "minutes": 106
+        }
+      ]
+    },
+    {
+      "id": "andheri_to_midc_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Andheri Station East",
+        "MIDC"
+      ],
+      "matchedEvidence": [],
+      "evidenceRecall": 0,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 51,
+        "totalTravelTimeMinutes": 10,
+        "distanceKm": 3.06
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to name, take the shared auto towards Bandra Reclamation, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 9.67
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 9.67
+        }
+      },
+      "topCandidateScores": [
+        {
+          "standName": "name",
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 9.67,
+          "fare": 20,
+          "minutes": null
+        },
+        {
+          "standName": "name",
+          "destination": "Pali Hill",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 7.58,
+          "fare": 25,
+          "minutes": null
+        },
+        {
+          "standName": "Andheri Station East",
+          "destination": "Marol Naka",
+          "score": 46.22,
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1.16,
+          "fare": 15,
+          "minutes": 27
+        }
+      ]
+    },
+    {
+      "id": "dadar_to_shivaji_park_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Dadar TT",
+        "Shivaji Park"
+      ],
+      "matchedEvidence": [],
+      "evidenceRecall": 0,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 36,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 2.25
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to name, take the shared auto towards Bandra Reclamation, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 2.3
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 2.3
+        }
+      },
+      "topCandidateScores": [
+        {
+          "standName": "name",
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 2.3,
+          "fare": 20,
+          "minutes": null
+        },
+        {
+          "standName": "name",
+          "destination": "Pali Hill",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 3.76,
+          "fare": 25,
+          "minutes": null
+        },
+        {
+          "standName": "Dadar TT (Tilak Nagar)",
+          "destination": "Mahim",
+          "score": 49.77,
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1.29,
+          "fare": 15,
+          "minutes": 29
+        }
+      ]
+    },
+    {
+      "id": "kurla_to_kurla_market_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Kurla Station West",
+        "Kurla Market"
+      ],
+      "matchedEvidence": [],
+      "evidenceRecall": 0,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 23,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 0.88
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to name, take the shared auto towards Bandra Reclamation, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 6.94
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 6.94
+        }
+      },
+      "topCandidateScores": [
+        {
+          "standName": "name",
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 6.94,
+          "fare": 20,
+          "minutes": null
+        },
+        {
+          "standName": "name",
+          "destination": "Pali Hill",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 5.64,
+          "fare": 25,
+          "minutes": null
+        },
+        {
+          "standName": "Kurla Station West",
+          "destination": "Nehru Nagar",
+          "score": 44.27,
+          "walkToStandKm": 0,
+          "walkFromDropKm": 1,
+          "fare": 15,
+          "minutes": 27
+        }
+      ]
+    },
+    {
+      "id": "malad_to_orlem_seed",
+      "valid": true,
+      "expectedEvidence": [
+        "Malad Station West",
+        "Orlem"
+      ],
+      "matchedEvidence": [],
+      "evidenceRecall": 0,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 23,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 1.05
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to name, take the shared auto towards Bandra Reclamation, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 16.26
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 16.26
+        }
+      },
+      "topCandidateScores": [
+        {
+          "standName": "name",
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 16.26,
+          "fare": 20,
+          "minutes": null
+        },
+        {
+          "standName": "name",
+          "destination": "Pali Hill",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 14.19,
+          "fare": 25,
+          "minutes": null
+        },
+        {
+          "standName": "Malad Station West",
+          "destination": "Malad Market",
+          "score": 36.91,
+          "walkToStandKm": 0,
+          "walkFromDropKm": 0.95,
+          "fare": 10,
+          "minutes": 22
+        }
+      ]
+    }
+  ]
+}

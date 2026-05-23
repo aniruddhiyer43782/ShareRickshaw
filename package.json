@@ -1,0 +1,25 @@
+{
+  "name": "sharerickshaw",
+  "version": "1.0.0",
+  "description": "",
+  "main": "map.js",
+  "scripts": {
+    "test": "node evaluation/test_route_planner_service.js && node evaluation/run_offline_route_evaluation.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aniruddhiyer43782/ShareRickshaw.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aniruddhiyer43782/ShareRickshaw/issues"
+  },
+  "homepage": "https://github.com/aniruddhiyer43782/ShareRickshaw#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2"
+  }
+}

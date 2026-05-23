@@ -1,0 +1,15 @@
+sequenceDiagram
+  participant P as Passenger
+  participant API as Express API
+  participant DB as MySQL
+  participant S as Socket.IO
+  participant D as Driver
+
+  P->>API: POST /api/bookings
+  API->>DB: Insert requested booking
+  API->>S: broadcast booking_request
+  S->>D: booking_request event
+  D->>API: POST /api/bookings/:id/accept
+  API->>DB: Assign driver and mark accepted
+  API->>S: booking_accepted
+  S->>P: booking_accepted event

@@ -1,222 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mumbai Share Auto</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        .form-container {
-            max-width: 450px;
-            margin: 100px auto 40px;
-            padding: 40px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Mumbai Share Auto</title>
+  <link rel="stylesheet" href="styles.css" />
 
-        .form-heading {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: #1a1a1a;
-        }
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f7faff; /* consistent neutral background */
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    /* ===== Navbar Consistent with All Pages ===== */
+    .navbar {
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      padding: 14px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
-            font-size: 0.95rem;
-        }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 20px;
+      color: #023047;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: #2196F3;
-        }
+    .nav-links a {
+      color: #023047;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
 
-        .form-group input.error {
-            border-color: #d32f2f;
-        }
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: #0077b6;
+      color: white;
+    }
 
-        .error-text {
-            color: #d32f2f;
-            font-size: 0.875rem;
-            margin-top: 5px;
-            display: none;
-        }
+    /* ===== Login Form ===== */
+    .form-container {
+      background: #fff;
+      max-width: 420px;
+      width: 90%;
+      margin: 100px auto 40px;
+      padding: 36px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 119, 182, 0.15);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
 
-        .error-text.show {
-            display: block;
-        }
+    .form-container:hover {
+      transform: translateY(-2px);
+    }
 
-        .submit-button {
-            width: 100%;
-            padding: 14px;
-            background: #2196F3;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            margin-top: 10px;
-        }
+    .form-heading {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #0077b6;
+      margin-bottom: 28px;
+    }
 
-        .submit-button:hover:not(:disabled) {
-            background: #1976D2;
-        }
+    /* Input Groups */
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
 
-        .submit-button:disabled {
-            background: #90CAF9;
-            cursor: not-allowed;
-        }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+    }
 
-        .general-error {
-            background: #ffebee;
-            color: #d32f2f;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            display: none;
-        }
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #d0d7de;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: #fafafa;
+      transition: all 0.3s ease;
+    }
 
-        .general-error.show {
-            display: block;
-        }
+    .form-group input:focus {
+      border-color: #0077b6;
+      background: #fff;
+      box-shadow: 0 0 8px rgba(0, 119, 182, 0.15);
+      outline: none;
+    }
 
-        .signup-link-container {
-            text-align: center;
-            margin-top: 25px;
-            font-size: 1rem;
-            color: #666;
-        }
+    .form-group input.error {
+      border-color: #d32f2f;
+    }
 
-        .signup-link-container a {
-            color: #2196F3;
-            text-decoration: none;
-            font-weight: 500;
-        }
+    .error-text {
+      color: #d32f2f;
+      font-size: 0.8rem;
+      margin-top: 5px;
+      display: none;
+    }
 
-        .signup-link-container a:hover {
-            text-decoration: underline;
-        }
+    .error-text.show {
+      display: block;
+    }
 
-        @media (max-width: 768px) {
-            .form-container {
-                margin: 60px 20px;
-                padding: 30px 20px;
-            }
+    /* ===== Buttons ===== */
+    .submit-button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #0077b6, #00b4d8);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
 
-            .form-heading {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+    .submit-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background: linear-gradient(90deg, #00b4d8, #0096c7);
+    }
+
+    .submit-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* General Error Message */
+    .general-error {
+      background: #ffebee;
+      color: #d32f2f;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .general-error.show {
+      display: block;
+    }
+
+    /* ===== Footer ===== */
+    footer.footer {
+      background: #023047;
+      color: #fff;
+      text-align: center;
+      font-size: 14px;
+      padding: 20px;
+      margin-top: auto;
+    }
+
+    /* ===== Extra Links ===== */
+    .signup-link-container {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .signup-link-container a {
+      color: #0077b6;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .signup-link-container a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .form-container {
+        margin: 80px 20px;
+        padding: 28px 20px;
+      }
+
+      .form-heading {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">🛺 Mumbai Share Auto</div>
+  <!-- ===== Navbar ===== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">🛺 Mumbai Share Auto</div>
 
-            <!-- Desktop Navigation -->
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="fare-calculator.html">Fare Calculator</a></li>
-                <li><a href="stands-map.html">Find Stands</a></li>
-                <li><a href="route-finder.html">Route Finder</a></li>
-                <li><a href="login.html" class="active">Login</a></li>
-                <li><a href="signup.html">Sign Up</a></li>
-            </ul>
+      <!-- Desktop Navigation -->
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fare-calculator.html">Fare Calculator</a></li>
+        <li><a href="stands-map.html">Find Stands</a></li>
+        <li><a href="route-finder.html">Route Finder</a></li>
+        <li><a href="login.html" class="active">Login</a></li>
+        <li><a href="signup.html">Sign Up</a></li>
+      </ul>
 
-            <!-- Hamburger Menu Icon -->
-            <button class="hamburger" aria-label="Open navigation menu">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu" aria-hidden="true">
-        <button class="mobile-menu-close" aria-label="Close navigation menu">&times;</button>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="fare-calculator.html">Fare Calculator</a></li>
-            <li><a href="stands-map.html">Find Stands</a></li>
-            <li><a href="route-finder.html">Route Finder</a></li>
-            <li><a href="login.html" class="active">Login</a></li>
-            <li><a href="signup.html">Sign Up</a></li>
-        </ul>
+      <!-- Hamburger Menu -->
+      <button class="hamburger" aria-label="Open navigation menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
     </div>
+  </nav>
 
-    <!-- Form Container -->
-    <div class="form-container">
-        <h1 class="form-heading">Login</h1>
+  <!-- ===== Mobile Menu ===== -->
+  <div class="mobile-menu-backdrop"></div>
+  <div class="mobile-menu" aria-hidden="true">
+    <button class="mobile-menu-close" aria-label="Close navigation menu">&times;</button>
+    <ul class="mobile-nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="fare-calculator.html">Fare Calculator</a></li>
+      <li><a href="stands-map.html">Find Stands</a></li>
+      <li><a href="route-finder.html">Route Finder</a></li>
+      <li><a href="login.html" class="active">Login</a></li>
+      <li><a href="signup.html">Sign Up</a></li>
+    </ul>
+  </div>
 
-        <div id="general-error" class="general-error"></div>
+  <!-- ===== Login Form ===== -->
+  <div class="form-container">
+    <h1 class="form-heading">Login</h1>
 
-        <form id="login-form">
-            <div class="form-group">
-                <label for="email">Email *</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="your@email.com"
-                    required
-                >
-                <div id="email-error" class="error-text">Please enter a valid email</div>
-            </div>
+    <div id="general-error" class="general-error"></div>
 
-            <div class="form-group">
-                <label for="password">Password *</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required
-                >
-                <div id="password-error" class="error-text">Please enter your password</div>
-            </div>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="your@email.com"
+          required
+        />
+        <div id="email-error" class="error-text">Please enter a valid email</div>
+      </div>
 
-            <button type="submit" class="submit-button" id="submit-btn">Login</button>
-        </form>
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter your password"
+          required
+        />
+        <div id="password-error" class="error-text">Please enter your password</div>
+      </div>
 
-        <div class="signup-link-container">
-            Don't have an account? <a href="signup.html">Sign up</a>
-        </div>
+      <button type="submit" class="submit-button" id="submit-btn">Login</button>
+    </form>
+
+    <div class="signup-link-container">
+      Don't have an account? <a href="signup.html">Sign up</a>
     </div>
+  </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-left">
-                <p class="footer-copyright">&copy; 2024 Mumbai Share Auto Finder. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <p class="footer-copyright">
+          &copy; 2024 Mumbai Share Auto Finder. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
 
-    <script src="script.js"></script>
-    <script src="js/login.js"></script>
+  <!-- ===== Scripts ===== -->
+  <script src="script.js"></script>
+  <script src="js/login.js"></script>
 </body>
 </html>

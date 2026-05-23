@@ -1,179 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculate fares, find share auto stands, discover routes, and stay safe while traveling in Mumbai's share autos. Your complete guide to shared auto-rickshaws.">
-    <title>Mumbai Share Auto Finder - Navigate Mumbai with Share Autos</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">🛺 Mumbai Share Auto</div>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Find, book, and travel safely with Mumbai’s share autos — real-time fare estimates, stand finder, and AI-powered routes built for every commuter.">
+  <title>Mumbai Share Auto Finder - Smarter, Faster Commutes</title>
 
-            <!-- Desktop Navigation -->
-            <ul class="nav-links" id="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="fare-calculator.html">Fare Calculator</a></li>
-                <li><a href="stands-map.html">Find Stands</a></li>
-                <li><a href="route-finder.html">Route Finder</a></li>
-                <li><a href="booking.html">Booking</a></li>
-                <li><a href="driver-dashboard.html">Driver Dashboard</a></li>
-                <li><a href="safety.html">Safety</a></li>
-            </ul>
+  <!-- Fonts & CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 
-            <!-- Hamburger Menu Icon -->
-            <button class="hamburger" aria-label="Open navigation menu">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu" aria-hidden="true">
-        <button class="mobile-menu-close" aria-label="Close navigation menu">&times;</button>
-        <ul class="mobile-nav-links" id="mobile-nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="fare-calculator.html">Fare Calculator</a></li>
-            <li><a href="stands-map.html">Find Stands</a></li>
-            <li><a href="route-finder.html">Route Finder</a></li>
-            <li><a href="booking.html">Booking</a></li>
-            <li><a href="driver-dashboard.html">Driver Dashboard</a></li>
-            <li><a href="safety.html">Safety</a></li>
-        </ul>
-    </div>
-
-    <!-- Hero Section -->
-    <header class="hero">
-        <div class="hero-container">
-            <h1 class="hero-heading">Navigate Mumbai with Share Autos</h1>
-            <p class="hero-subheading">Calculate fares, find routes, and stay safe</p>
-            <div class="hero-cta">
-                <a href="fare-calculator.html" class="btn btn-primary">Calculate Fare</a>
-                <a href="stands-map.html" class="btn btn-secondary">Find Stands</a>
-            </div>
-        </div>
-    </header>
-
-    <!-- Features Overview Section -->
-    <section class="features-section">
-        <div class="features-container">
-            <h2 class="section-heading">Everything You Need for Share Auto Travel</h2>
-            <div class="features-grid">
-                <!-- Feature Card 1 -->
-                <a href="fare-calculator.html" class="feature-card">
-                    <div class="feature-icon icon-blue">💰</div>
-                    <h3 class="feature-title">Smart Fare Calculator</h3>
-                    <p class="feature-description">Get accurate fare estimates instantly</p>
-                </a>
-
-                <!-- Feature Card 2 -->
-                <a href="stands-map.html" class="feature-card">
-                    <div class="feature-icon icon-blue">🗺️</div>
-                    <h3 class="feature-title">Interactive Map</h3>
-                    <p class="feature-description">10+ share auto stands mapped</p>
-                </a>
-
-                <!-- Feature Card 3 -->
-                <a href="route-finder.html" class="feature-card">
-                    <div class="feature-icon icon-teal">🎯</div>
-                    <h3 class="feature-title">Route Finder</h3>
-                    <p class="feature-description">Find best routes from A to B</p>
-                </a>
-
-                <!-- Feature Card 4 -->
-                <a href="booking.html" class="feature-card">
-                    <div class="feature-icon icon-blue">📱</div>
-                    <h3 class="feature-title">Book Auto</h3>
-                    <p class="feature-description">Real-time booking with live tracking</p>
-                </a>
-
-                <!-- Feature Card 5 -->
-                <a href="driver-dashboard.html" class="feature-card">
-                    <div class="feature-icon icon-teal">🚗</div>
-                    <h3 class="feature-title">Driver Dashboard</h3>
-                    <p class="feature-description">Manage bookings and earn more</p>
-                </a>
-
-                <!-- Feature Card 6 -->
-                <a href="safety.html" class="feature-card">
-                    <div class="feature-icon icon-teal">🚨</div>
-                    <h3 class="feature-title">Safety Features</h3>
-                    <p class="feature-description">SOS, trip sharing, and more</p>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about-section">
-        <div class="about-container">
-            <h2 class="section-heading">About Share Autos in Mumbai</h2>
-            <div class="about-content">
-                <p>Share autos, also known as shared auto-rickshaws, are a popular and affordable mode of transport in Mumbai. Unlike regular auto-rickshaws that serve individual passengers, share autos follow fixed routes and pick up multiple passengers heading in the same direction. They operate from designated stands and follow specific routes connecting major neighborhoods, railway stations, and commercial areas.</p>
-
-                <p>Typical fares for share autos range from ₹10 to ₹30 per person, depending on the distance and route. The fare is significantly lower than hiring a private auto-rickshaw, making it an economical choice for daily commuters. Passengers pay a fixed rate based on the route, and the fare is collected either at the beginning or end of the journey. Most share auto stands display the route information and fare details on signboards.</p>
-
-                <p>To identify share auto stands, look for groups of auto-rickshaws parked at specific locations, often near railway stations, bus stops, or busy market areas. These stands typically have signboards indicating the destination and route number. Share autos usually wait until they have 4-6 passengers before departing, though this can vary by route. Our interactive map helps you locate the nearest share auto stands and find the best routes for your journey.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-left">
-                <p class="footer-copyright">&copy; 2024 Mumbai Share Auto Finder. All rights reserved.</p>
-                <p class="footer-disclaimer">Fares and routes are indicative. Please verify with drivers.</p>
-            </div>
-            <div class="footer-right">
-                <h3 class="footer-heading">Quick Links</h3>
-                <nav class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="fare-calculator.html">Fare Calculator</a>
-                    <a href="stands-map.html">Find Stands</a>
-                    <a href="route-finder.html">Route Finder</a>
-                    <a href="booking.html">Booking</a>
-                    <a href="driver-dashboard.html">Driver Dashboard</a>
-                    <a href="safety.html">Safety</a>
-                </nav>
-            </div>
-        </div>
-    </footer>
-
-    <noscript>For the best experience, please enable JavaScript</noscript>
-    <script src="script.js"></script>
-    <script src="js/auth.js"></script>
-    <script>
-    // Redirect autowalas to dashboard
-    const userData = window.getUserData();
-    if (userData && userData.role === 'autowala') {
-      window.location.href = 'driver-dashboard.html';
+  <style>
+    /* ---------------- HEADER ---------------- */
+    .navbar {
+      background: #ffffff;
+      border-bottom: 1px solid #eaeaea;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      height: 70px;
     }
 
-    // Hide/show features based on auth status
-    document.addEventListener('DOMContentLoaded', function() {
-      const bookingFeature = document.querySelector('a[href="booking.html"]').closest('.feature-card');
-      const driverFeature = document.querySelector('a[href="driver-dashboard.html"]').closest('.feature-card');
-      const safetyFeature = document.querySelector('a[href="safety.html"]').closest('.feature-card');
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #023047;
+      letter-spacing: 0.3px;
+    }
 
-      if (!window.isLoggedIn()) {
-        // Hide booking, driver, and safety features for guests
-        if (bookingFeature) bookingFeature.style.display = 'none';
-        if (driverFeature) driverFeature.style.display = 'none';
-        if (safetyFeature) safetyFeature.style.display = 'none';
-      } else if (userData.role === 'user') {
-        // Show booking and safety, hide driver for users
-        if (bookingFeature) bookingFeature.style.display = 'block';
-        if (driverFeature) driverFeature.style.display = 'none';
-        if (safetyFeature) safetyFeature.style.display = 'block';
+    .nav-links a {
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+
+    .nav-links a[href*="profile"] {
+      background: #e6f4ff;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    .nav-links a[href*="logout"] {
+      background: #0077b6;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 8px;
+      margin-left: 6px;
+      box-shadow: 0 2px 6px rgba(0,119,182,0.3);
+    }
+
+    .nav-links a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,119,182,0.2);
+    }
+
+    /* ---------------- HERO ---------------- */
+    .hero {
+      background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+      padding: 90px 20px 60px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-heading {
+      font-size: 42px;
+      font-weight: 800;
+      color: #023047;
+      line-height: 1.25;
+      margin-bottom: 15px;
+    }
+
+    .hero-heading span {
+      color: #0077b6;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: #4f4f4f;
+      max-width: 700px;
+      margin: 0 auto 30px;
+      line-height: 1.7;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-main {
+      background: #0077b6;
+      color: #fff;
+      padding: 16px 36px;
+      font-size: 17px;
+      border-radius: 10px;
+      font-weight: 600;
+      box-shadow: 0 6px 16px rgba(0, 119, 182, 0.25);
+      transition: all 0.3s ease;
+    }
+
+    .btn-main:hover {
+      background: #0288d1;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 119, 182, 0.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #0077b6;
+      color: #0077b6;
+      padding: 15px 34px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 17px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline:hover {
+      background: #0077b6;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 119, 182, 0.25);
+    }
+
+    /* ---------------- FEATURES ---------------- */
+    .features-section {
+      background: #f9fafc;
+      padding: 60px 30px;
+      text-align: center;
+    }
+
+    .section-heading {
+      font-size: 32px;
+      color: #023047;
+      font-weight: 700;
+      margin-bottom: 35px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      padding: 24px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .feature-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .feature-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #023047;
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    /* ---------------- ABOUT ---------------- */
+    .about-section {
+      background: linear-gradient(180deg, #f8fbfd 0%, #e7f5ff 100%);
+      text-align: center;
+      padding: 60px 30px;
+    }
+
+    .about-section h2 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #023047;
+    }
+
+    .about-section p {
+      max-width: 800px;
+      margin: 0 auto 18px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #334e5f;
+    }
+
+    .about-section .btn-main {
+      margin-top: 15px;
+    }
+
+    /* ---------------- FOOTER ---------------- */
+    .footer {
+      background: #023047;
+      color: white;
+      padding: 35px 25px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links a {
+      color: #aad4f5;
+      font-weight: 500;
+      margin-left: 15px;
+    }
+
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+      .hero-heading {
+        font-size: 32px;
       }
-    });
-    </script>
+
+      .hero-sub {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">🛺 Mumbai <span style="color:#0077b6;">Share Auto</span></div>
+      <div class="nav-links" id="nav-links">
+        <a href="profile.html">👤 Profile</a>
+        <a href="logout.html">🚪 Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <h1 class="hero-heading">Navigate Mumbai with Share Autos:  <span> faster, safer, smarter.</span></h1>
+    <p class="hero-sub">
+      Instantly find your nearest stand, book an auto, and estimate fares with AI-powered insights, designed for every Mumbaikar’s daily commute.
+    </p>
+    <div class="hero-cta">
+      <a href="http://localhost:5500" class="btn-main">🚖 Book Auto</a>
+      <a href="stands-map.html" class="btn-outline">🗺️ Find Stands</a>
+    </div>
+  </header>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <h2 class="section-heading">Everything You Need for Share Auto Travel</h2>
+    <div class="features-grid">
+      <a href="fare-calculator.html" class="feature-card">
+        <div class="feature-icon">💰</div>
+        <div class="feature-title">Smart Fare Calculator</div>
+        <div class="feature-desc">AI + RTO fare prediction with real traffic data.</div>
+      </a>
+      <a href="stands-map.html" class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <div class="feature-title">Interactive Map</div>
+        <div class="feature-desc">Find verified stands with live availability.</div>
+      </a>
+      <a href="route-finder.html" class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Route Finder</div>
+        <div class="feature-desc">Discover optimized routes avoiding congestion.</div>
+      </a>
+      <a href="http://localhost:5500" class="feature-card">
+
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">Book Auto</div>
+        <div class="feature-desc">Book, share, and track rides in real time.</div>
+      </a>
+      <a href="driver-dashboard.html" class="feature-card">
+        <div class="feature-icon">🚗</div>
+        <div class="feature-title">Driver Dashboard</div>
+        <div class="feature-desc">Help drivers manage trips efficiently.</div>
+      </a>
+      <a href="safety.html" class="feature-card">
+        <div class="feature-icon">🚨</div>
+        <div class="feature-title">Safety Features</div>
+        <div class="feature-desc">SOS, night tracking, and emergency contacts.</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-section">
+    <h2>About Share Autos in Mumbai</h2>
+
+    <p>
+    Mumbai runs on the rhythm of share autos - quick, economical, and perfectly woven into the city’s daily pulse. They follow fixed routes, carry multiple passengers, and deliver unmatched convenience for millions.
+    </p>
+    <p>With <strong>ShareRickshaw</strong> 
+ ,your everyday commute becomes smoother and safer. Explore real‑time routes, get instant fare estimates, book your ride with a tap, and travel with complete confidence.
+Because the shortest route to a better commute… is a smarter one.</p>
+<a href="http://localhost:5500" class="btn-main" style="margin-top:20px; display:inline-block;">
+  🚖 Start Your Smart Ride
+</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>&copy; 2025 Mumbai Share Auto Finder</div>
+    <div class="footer-links">
+        <a href="profile.html"> Profile</a>
+        <a href="stands-map.html">Find Stands</a>
+      <a href="route-finder.html">Route Finder</a>
+    </div>
+  </footer>
 </body>
 </html>

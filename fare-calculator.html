@@ -1,162 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculate auto rickshaw fares in Mumbai - Official government-approved rates">
-    <title>Fare Calculator - Mumbai Share Auto</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fare Calculator | Mumbai Share Auto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+      color: #023047;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- NAVBAR --- */
+    .navbar {
+      background: #ffffff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      padding: 14px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-brand {
+      font-weight: 700;
+      font-size: 20px;
+      color: #023047;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .nav-links a {
+      color: #023047;
+      font-weight: 500;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      background: #0077b6;
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    /* --- CARD --- */
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 500px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 28px rgba(0, 119, 182, 0.15);
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0077b6;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #023047;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.8px solid #d0d7de;
+      border-radius: 12px;
+      background: #f9fbfc;
+      font-size: 15px;
+      transition: all 0.2s ease;
+      color: #023047;
+      margin-bottom: 16px;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #0077b6;
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(0, 119, 182, 0.2);
+      outline: none;
+    }
+
+    .btn-main {
+      margin-top: 18px;
+      width: 100%;
+      background: linear-gradient(90deg, #0077b6, #0096c7);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 14px rgba(0, 119, 182, 0.25);
+    }
+
+    .btn-main:hover {
+      background: linear-gradient(90deg, #0096c7, #00b4d8);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 119, 182, 0.35);
+    }
+
+    .result-box {
+      background: #e3f2fd;
+      border-left: 5px solid #0077b6;
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 26px;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .result-fare {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0077b6;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      background: #023047;
+      color: white;
+      text-align: center;
+      font-size: 14px;
+      padding: 14px;
+      margin-top: auto;
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 16px 20px;
+      }
+
+      .nav-links {
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .nav-links a {
+        font-size: 14px;
+        padding: 6px 10px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">🛺 Mumbai Share Auto</div>
-
-            <!-- Desktop Navigation -->
-            <ul class="nav-links" id="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="fare-calculator.html">Fare Calculator</a></li>
-                <li><a href="stands-map.html">Find Stands</a></li>
-                <li><a href="route-finder.html">Route Finder</a></li>
-                <li><a href="safety.html">Safety</a></li>
-            </ul>
-
-            <!-- Hamburger Menu Icon -->
-            <button class="hamburger" aria-label="Open navigation menu">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu" aria-hidden="true">
-        <button class="mobile-menu-close" aria-label="Close navigation menu">&times;</button>
-        <ul class="mobile-nav-links" id="mobile-nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="fare-calculator.html">Fare Calculator</a></li>
-            <li><a href="stands-map.html">Find Stands</a></li>
-            <li><a href="route-finder.html">Route Finder</a></li>
-            <li><a href="safety.html">Safety</a></li>
-        </ul>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">🛺 <span>Mumbai Share Auto</span></div>
+    <div class="nav-links">
+      <a href="index.html">🏠 Home</a>
+      <a href="fare-calculator.html" class="active">💰 Fare Calculator</a>
+      <a href="stands-map.html">🗺️ Find Stands</a>
+      <a href="route-finder.html">🎯 Route Finder</a>
+      <a href="safety.html">🚨 Safety</a>
+      <a href="http://localhost:5500">📱 Booking</a>
+      <a href="profile.html">👤 Profile</a>
+      <a href="logout.html">🚪 Logout</a>
     </div>
+  </nav>
 
-    <!-- Fare Information Card Section -->
-    <section class="info-section">
-        <div class="info-card">
-            <h2 class="info-title">Official Fare Rates</h2>
-            <ul class="rate-list">
-                <li>Base fare: <strong>₹26</strong> for first <strong>1.5 km</strong></li>
-                <li>Additional distance: <strong>₹17.14</strong> per km</li>
-                <li>Waiting charge: <strong>₹3</strong> per minute</li>
-                <li>Night surcharge: <strong>25%</strong> extra (<strong>12 AM - 5 AM</strong>)</li>
-            </ul>
-            <p class="rate-note">Rates effective from February 2025 (Maharashtra Govt.)</p>
-        </div>
-    </section>
+  <!-- MAIN CONTENT -->
+  <main class="flex flex-col items-center justify-center flex-grow py-12 px-4">
+    <div class="card">
+      <h1>Mumbai Auto Fare Estimator</h1>
 
-    <!-- Calculator Form Section -->
-    <section class="calculator-section">
-        <div class="calculator-card">
-            <h1 class="page-title">Auto Rickshaw Fare Calculator</h1>
-            <p class="subtitle">Calculate your fare based on Mumbai government-approved rates</p>
+      <label for="distance">Distance (km)</label>
+      <input id="distance" type="number" step="0.1" value="2.6" />
 
-            <form id="fareCalculatorForm">
-                <!-- Distance Input -->
-                <div class="form-group">
-                    <label for="distance">Distance (km)</label>
-                    <input type="number" id="distance" name="distance"
-                           placeholder="Enter distance in km"
-                           min="0" step="0.1" required>
-                </div>
+      <label for="time">Time of Day</label>
+      <select id="time">
+        <option value="8">🌅 Morning (5 AM–12 PM)</option>
+        <option value="14" selected>☀️ Afternoon (12 PM–5 PM)</option>
+        <option value="20">🌇 Evening (5 PM–10 PM)</option>
+        <option value="2">🌙 Night (10 PM–5 AM)</option>
+      </select>
 
-                <!-- Waiting Time Input -->
-                <div class="form-group">
-                    <label for="waitingTime">Waiting Time (minutes)</label>
-                    <input type="number" id="waitingTime" name="waitingTime"
-                           placeholder="Enter waiting time"
-                           min="0" step="1" value="0">
-                </div>
+      <label for="day">Day</label>
+      <select id="day">
+        <option value="0">Mon</option>
+        <option value="1">Tue</option>
+        <option value="2">Wed</option>
+        <option value="3">Thu</option>
+        <option value="4" selected>Fri</option>
+        <option value="5">Sat</option>
+        <option value="6">Sun</option>
+      </select>
 
-                <!-- Time of Day Dropdown -->
-                <div class="form-group">
-                    <label for="timeOfDay">Time of Day</label>
-                    <select id="timeOfDay" name="timeOfDay">
-                        <option value="normal">Normal Hours (5 AM - 12 AM)</option>
-                        <option value="night">Night Hours (12 AM - 5 AM) - 25% extra</option>
-                    </select>
-                </div>
+      <button id="calcBtn" class="btn-main">💰 Estimate Fare</button>
 
-                <!-- Submit Button -->
-                <button type="submit" id="calculateBtn" class="btn btn-primary">
-                    Calculate Fare
-                </button>
+      <div id="result" class="result-box hidden">
+        <p>Estimated Fare:</p>
+        <p id="fareVal" class="result-fare">₹0</p>
+        <p id="note" class="text-xs text-gray-500 mt-1"></p>
+      </div>
+    </div>
+  </main>
 
-                <!-- Error Message (hidden by default) -->
-                <div class="error-message" id="errorMessage"></div>
-            </form>
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2025 Mumbai Share Auto | Smarter Rides, Safer Cities
+  </footer>
 
-            <!-- Results Container (hidden by default) -->
-            <div class="results-container" id="resultsContainer">
-                <h2 class="section-heading">Fare Breakdown</h2>
+  <!-- SCRIPT -->
+  <script>
+    document.getElementById("calcBtn").addEventListener("click", () => {
+      const distance = parseFloat(document.getElementById("distance").value);
+      const hour = parseInt(document.getElementById("time").value);
+      const day = parseInt(document.getElementById("day").value);
 
-                <!-- Base Fare Card (always visible after calculation) -->
-                <div class="charge-card" id="baseFareCard">
-                    <span class="charge-label">Base Fare (1.5 km)</span>
-                    <span class="charge-value">₹26.00</span>
-                </div>
+      let baseFare = 23; // ₹23 for first 1.5 km
+      let perKm = 15; // ₹15 per km beyond that
+      let fare;
 
-                <!-- Distance Charge Card (conditional) -->
-                <div class="charge-card" id="distanceCard" style="display: none;">
-                    <span class="charge-label" id="distanceLabel">Distance Charge</span>
-                    <span class="charge-value" id="distanceValue">₹0.00</span>
-                </div>
+      if (distance <= 1.5) fare = baseFare;
+      else fare = baseFare + (distance - 1.5) * perKm;
 
-                <!-- Waiting Charge Card (conditional) -->
-                <div class="charge-card" id="waitingCard" style="display: none;">
-                    <span class="charge-label" id="waitingLabel">Waiting Charge</span>
-                    <span class="charge-value" id="waitingValue">₹0.00</span>
-                </div>
+      // Night fare (25% extra)
+      if (hour >= 22 || hour < 5) fare *= 1.25;
 
-                <!-- Night Surcharge Card (conditional) -->
-                <div class="charge-card" id="nightCard" style="display: none;">
-                    <span class="charge-label">Night Surcharge (25%)</span>
-                    <span class="charge-value" id="nightValue">₹0.00</span>
-                </div>
+      // Weekend fare (10% extra)
+      if (day === 5 || day === 6) fare *= 1.1;
 
-                <!-- Total Card (always visible after calculation) -->
-                <div class="total-card">
-                    <div class="total-label">TOTAL FARE</div>
-                    <div class="total-amount" id="totalAmount">₹0.00</div>
-                </div>
-            </div>
-        </div>
-    </section>
+      fare = Math.round(fare);
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-left">
-                <p class="footer-copyright">&copy; 2024 Mumbai Share Auto Finder. All rights reserved.</p>
-                <p class="footer-disclaimer">Fares and routes are indicative. Please verify with drivers.</p>
-            </div>
-            <div class="footer-right">
-                <h3 class="footer-heading">Quick Links</h3>
-                <nav class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="fare-calculator.html">Fare Calculator</a>
-                    <a href="stands-map.html">Find Stands</a>
-                    <a href="route-finder.html">Route Finder</a>
-                    <a href="safety.html">Safety</a>
-                </nav>
-            </div>
-        </div>
-    </footer>
+      document.getElementById("result").classList.remove("hidden");
+      document.getElementById("fareVal").textContent = `₹${fare}`;
+      document.getElementById("note").textContent =
+        hour >= 22 || hour < 5
+          ? "🌙 Includes 25% night fare surcharge."
+          : day >= 5
+          ? "🚕 Weekend fare adjustment (10%)."
+          : "✅ Regular weekday fare as per RTO rates.";
+    });
+  </script>
 
-    <script src="script.js"></script>
-    <script src="js/auth.js"></script>
+  <!-- Load Global SOS Button -->
+<div id="globalSosContainer"></div>
+<script>
+  fetch("global-sos.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("globalSosContainer").innerHTML = html;
+    });
+</script>
+    <script>
+      // Check authentication immediately
+      if (!window.isLoggedIn()) {
+        window.location.href = "login.html";
+      } else {
+        // REDIRECT AUTOWALAS TO DEDICATED PAGE
+        const userData = window.getUserData();
+        if (userData && userData.role === "autowala") {
+          window.location.href = "autowala-profile.html";
+        }
+      }
+    </script>
+
 </body>
 </html>

@@ -362,6 +362,45 @@ exports.addEmergencyContact = async (req, res) => {
   }
 };
 
+// GET /api/profile/emergency-contacts
+// Purpose: Load all emergency contacts for current user
+exports.getEmergencyContacts = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Verify user exists
+    const [users] = await db.query(
+      "SELECT role FROM users WHERE id = ?",
+      [userId]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Fetch contacts
+    const [contacts] = await db.query(
+      "SELECT id, contact_name, contact_phone, contact_email FROM emergency_contacts WHERE user_id = ? ORDER BY created_at ASC",
+      [userId]
+    );
+
+    return res.json({
+      success: true,
+      contacts
+    });
+
+  } catch (error) {
+    console.error("Get emergency contacts error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
+};
+
 // DELETE /api/profile/emergency-contacts/:id
 // Purpose: Delete an emergency contact
 exports.deleteEmergencyContact = async (req, res) => {

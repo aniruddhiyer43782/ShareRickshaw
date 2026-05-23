@@ -1,5 +1,6 @@
-// Autowala signup form logic
-const API_BASE_URL = "http://localhost:3000/api";
+// js/signup-autowala.js
+const API_BASE_URL = window.API_BASE_URL || "http://localhost:3000/api";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("signup-form");
   const submitBtn = document.getElementById("submit-btn");
@@ -17,25 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // Error elements
   const emailError = document.getElementById("email-error");
   const passwordError = document.getElementById("password-error");
-  const confirmPasswordError = document.getElementById(
-    "confirm-password-error"
-  );
+  const confirmPasswordError = document.getElementById("confirm-password-error");
   const driverNameError = document.getElementById("driver-name-error");
   const phoneError = document.getElementById("phone-error");
   const locationError = document.getElementById("location-error");
   const licensePlateError = document.getElementById("license-plate-error");
 
-  // Validation functions
+  // Validation helpers (same rules you used)
   function validateEmail() {
     const email = emailInput.value.trim();
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!regex.test(email)) {
       emailInput.classList.add("error");
       emailError.classList.add("show");
       return false;
     }
-
     emailInput.classList.remove("error");
     emailError.classList.remove("show");
     return true;
@@ -43,176 +40,107 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function validatePassword() {
     const password = passwordInput.value;
-
     if (password.length < 6) {
       passwordInput.classList.add("error");
       passwordError.classList.add("show");
       return false;
     }
-
     passwordInput.classList.remove("error");
     passwordError.classList.remove("show");
     return true;
   }
 
   function validateConfirmPassword() {
-    const password = passwordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
-
-    if (password !== confirmPassword) {
+    if (passwordInput.value !== confirmPasswordInput.value) {
       confirmPasswordInput.classList.add("error");
       confirmPasswordError.classList.add("show");
       return false;
     }
-
     confirmPasswordInput.classList.remove("error");
     confirmPasswordError.classList.remove("show");
     return true;
   }
 
   function validateDriverName() {
-    const driverName = driverNameInput.value.trim();
-
-    if (driverName.length < 2 || driverName.length > 100) {
+    const v = driverNameInput.value.trim();
+    if (v.length < 2 || v.length > 100) {
       driverNameInput.classList.add("error");
       driverNameError.classList.add("show");
       return false;
     }
-
     driverNameInput.classList.remove("error");
     driverNameError.classList.remove("show");
     return true;
   }
 
   function validatePhone() {
-    const phone = phoneInput.value.trim();
+    const v = phoneInput.value.trim();
     const regex = /^\d{10}$/;
-
-    if (!regex.test(phone)) {
+    if (!regex.test(v)) {
       phoneInput.classList.add("error");
       phoneError.classList.add("show");
       return false;
     }
-
     phoneInput.classList.remove("error");
     phoneError.classList.remove("show");
     return true;
   }
 
   function validateLocation() {
-    const location = locationInput.value.trim();
-
-    if (location.length < 2 || location.length > 100) {
+    const v = locationInput.value.trim();
+    if (v.length < 2 || v.length > 100) {
       locationInput.classList.add("error");
       locationError.classList.add("show");
       return false;
     }
-
     locationInput.classList.remove("error");
     locationError.classList.remove("show");
     return true;
   }
 
   function validateLicensePlate() {
-    const licensePlate = licensePlateInput.value.trim().toUpperCase();
+    const v = licensePlateInput.value.trim().toUpperCase();
     const regex = /^[A-Z0-9]{5,20}$/;
-
-    if (!regex.test(licensePlate)) {
+    if (!regex.test(v)) {
       licensePlateInput.classList.add("error");
       licensePlateError.classList.add("show");
       return false;
     }
-
     licensePlateInput.classList.remove("error");
     licensePlateError.classList.remove("show");
     return true;
   }
 
-  // Add blur event listeners for validation
-  emailInput.addEventListener("blur", validateEmail);
-  passwordInput.addEventListener("blur", validatePassword);
-  confirmPasswordInput.addEventListener("blur", validateConfirmPassword);
-  driverNameInput.addEventListener("blur", validateDriverName);
-  phoneInput.addEventListener("blur", validatePhone);
-  locationInput.addEventListener("blur", validateLocation);
-  licensePlateInput.addEventListener("blur", validateLicensePlate);
-
-  // Clear errors on input
-  emailInput.addEventListener("input", () => {
-    emailInput.classList.remove("error");
-    emailError.classList.remove("show");
+  // Event listeners to clear errors
+  [emailInput, passwordInput, confirmPasswordInput, driverNameInput, phoneInput, locationInput, licensePlateInput].forEach(el => {
+    el?.addEventListener("input", () => {
+      el.classList.remove("error");
+      // hide corresponding error if exists
+      const err = document.getElementById(el.id + "-error");
+      if (err) err.classList.remove("show");
+    });
   });
 
-  passwordInput.addEventListener("input", () => {
-    passwordInput.classList.remove("error");
-    passwordError.classList.remove("show");
-  });
-
-  confirmPasswordInput.addEventListener("input", () => {
-    confirmPasswordInput.classList.remove("error");
-    confirmPasswordError.classList.remove("show");
-  });
-
-  driverNameInput.addEventListener("input", () => {
-    driverNameInput.classList.remove("error");
-    driverNameError.classList.remove("show");
-  });
-
-  phoneInput.addEventListener("input", () => {
-    phoneInput.classList.remove("error");
-    phoneError.classList.remove("show");
-  });
-
-  locationInput.addEventListener("input", () => {
-    locationInput.classList.remove("error");
-    locationError.classList.remove("show");
-  });
-
-  // Auto-uppercase license plate input
-  licensePlateInput.addEventListener("input", (e) => {
+  licensePlateInput?.addEventListener("input", (e) => {
     e.target.value = e.target.value.toUpperCase();
-    licensePlateInput.classList.remove("error");
-    licensePlateError.classList.remove("show");
   });
 
-  // Form submission
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    // Hide general error
     generalError.classList.remove("show");
 
-    // Validate all fields
-    const isEmailValid = validateEmail();
-    const isPasswordValid = validatePassword();
-    const isConfirmPasswordValid = validateConfirmPassword();
-    const isDriverNameValid = validateDriverName();
-    const isPhoneValid = validatePhone();
-    const isLocationValid = validateLocation();
-    const isLicensePlateValid = validateLicensePlate();
+    const ok = validateEmail() && validatePassword() && validateConfirmPassword()
+      && validateDriverName() && validatePhone() && validateLocation() && validateLicensePlate();
 
-    if (
-      !isEmailValid ||
-      !isPasswordValid ||
-      !isConfirmPasswordValid ||
-      !isDriverNameValid ||
-      !isPhoneValid ||
-      !isLocationValid ||
-      !isLicensePlateValid
-    ) {
-      return;
-    }
+    if (!ok) return;
 
-    // Disable submit button
     submitBtn.disabled = true;
     submitBtn.textContent = "Creating Account...";
 
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup-autowala`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: emailInput.value.trim(),
           password: passwordInput.value,
@@ -220,29 +148,26 @@ document.addEventListener("DOMContentLoaded", () => {
           phone_number: phoneInput.value.trim(),
           operating_location: locationInput.value.trim(),
           license_plate: licensePlateInput.value.trim().toUpperCase(),
-          role: "autowala",
+          role: "autowala"
         }),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        // Store token and user data
-        localStorage.setItem("authToken", data.token);
+        // store under unified keys
+        localStorage.setItem("token", data.token);
         localStorage.setItem("userData", JSON.stringify(data.user));
 
-        // Redirect to home page
-        window.location.href = "index.html";
+        window.location.href = "driver-dashboard.html";
       } else {
-        // Show error message
-        generalError.textContent =
-          data.message || "Something went wrong. Please try again.";
+        generalError.textContent = data.message || "Something went wrong. Please try again.";
         generalError.classList.add("show");
         submitBtn.disabled = false;
         submitBtn.textContent = "Create Autowala Account";
       }
-    } catch (error) {
-      console.error("Signup error:", error);
+    } catch (err) {
+      console.error("Signup error:", err);
       generalError.textContent = "Unable to connect. Please try again.";
       generalError.classList.add("show");
       submitBtn.disabled = false;

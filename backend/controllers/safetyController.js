@@ -1,101 +1,78 @@
 const db = require("../config/database");
 const emailService = require("../services/emailService");
-const { extractLicensePlate } = require("../services/geminiService"); // Import new service
-// FIX: Corrected the relative path. It should be two levels up from 'backend/controllers'
-const locationService = require("../../js/locationService");
+const { extractLicensePlate } = require("../services/geminiService"); // Gemini AI service
+const locationService = require("../../js/locationService"); // Reverse geocoding
 
-console.log("Safety controller: Loading...");
+console.log("Safety controller: Loaded successfully.");
 
-// In-memory store for SOS cooldown tracking (in production, use Redis)
+// In-memory cooldown tracker for SOS
 const sosCooldowns = new Map();
 
-// POST /api/sos/trigger
-// Purpose: Trigger SOS alert and send emergency emails to all contacts
+// ===========================================================
+// 🚨 SOS ALERT HANDLER
+// ===========================================================
 exports.triggerSOS = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    // Check SOS cooldown (prevent spam)
     const cooldownKey = `user_${userId}`;
     const now = Date.now();
     const lastSosTime = sosCooldowns.get(cooldownKey);
 
+    // Rate limit SOS (1 minute)
     if (lastSosTime && now - lastSosTime < 60000) {
-      // 1 minute cooldown
       const remainingTime = Math.ceil((60000 - (now - lastSosTime)) / 1000);
       return res.status(429).json({
         success: false,
-        message: `Please wait ${remainingTime} seconds before triggering another SOS alert`,
+        message: `Please wait ${remainingTime} seconds before triggering another SOS alert.`,
         cooldownRemaining: remainingTime,
       });
     }
 
-    // Get user information
+    // Fetch user
     const [users] = await db.query(
       "SELECT id, username, full_name, phone_number, email FROM users WHERE id = ?",
       [userId]
     );
-
-    if (users.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+    if (users.length === 0)
+      return res.status(404).json({ success: false, message: "User not found" });
 
     const user = users[0];
     const userName = user.full_name || user.username;
 
-    // Get emergency contacts
+    // Fetch emergency contacts
     const [emergencyContacts] = await db.query(
       "SELECT id, contact_name, contact_phone, contact_email FROM emergency_contacts WHERE user_id = ? ORDER BY created_at ASC",
       [userId]
     );
 
-    if (emergencyContacts.length === 0) {
+    if (emergencyContacts.length === 0)
       return res.status(400).json({
         success: false,
         message:
-          "No emergency contacts found. Please add emergency contacts before triggering SOS.",
+          "No emergency contacts found. Please add contacts before triggering SOS.",
         requiresContacts: true,
       });
-    }
 
-    // Filter contacts that have email addresses
     const contactsWithEmail = emergencyContacts.filter(
       (contact) => contact.contact_email
     );
-
-    if (contactsWithEmail.length === 0) {
+    if (contactsWithEmail.length === 0)
       return res.status(400).json({
         success: false,
         message:
-          "No emergency contacts with email addresses found. Please add email addresses to your emergency contacts.",
+          "No emergency contacts with email addresses found. Please update contact emails.",
         requiresEmails: true,
       });
-    }
 
-    // Get location from request body or try to get GPS location
-    let location = req.body.location;
-
-    if (!location) {
-      // If no location provided, return error - frontend should handle GPS
+    // Validate location
+    const location = req.body.location;
+    if (!location || !location.latitude || !location.longitude)
       return res.status(400).json({
         success: false,
-        message: "Location information is required for SOS alert",
-        requiresLocation: true,
+        message: "Valid latitude and longitude are required.",
       });
-    }
 
-    // Validate location data
-    if (!location.latitude || !location.longitude) {
-      return res.status(400).json({
-        success: false,
-        message: "Valid latitude and longitude are required",
-      });
-    }
-
-    // Log SOS trigger for audit
+    // Log SOS event
     await db.query(
       "INSERT INTO sos_logs (user_id, latitude, longitude, accuracy, contacts_count, created_at) VALUES (?, ?, ?, ?, ?, NOW())",
       [
@@ -107,10 +84,8 @@ exports.triggerSOS = async (req, res) => {
       ]
     );
 
-    // Update cooldown
     sosCooldowns.set(cooldownKey, now);
 
-    // Send emergency emails
     console.log(
       `Sending SOS alerts to ${contactsWithEmail.length} contacts for user ${userName}`
     );
@@ -122,90 +97,53 @@ exports.triggerSOS = async (req, res) => {
         location
       );
 
-    // Calculate success statistics
-    const successfulEmails = emailResults.filter((result) => result.success);
-    const failedEmails = emailResults.filter((result) => !result.success);
+    const successfulEmails = emailResults.filter((r) => r.success);
+    const failedEmails = emailResults.filter((r) => !r.success);
 
-    // Log results for debugging
     console.log(
       `SOS Email Results: ${successfulEmails.length} successful, ${failedEmails.length} failed`
     );
-    if (failedEmails.length > 0) {
-      console.error("Failed emails:", failedEmails);
-    }
 
-    // Return response with detailed results
     const response = {
       success: successfulEmails.length > 0,
       message:
         successfulEmails.length > 0
-          ? `Emergency alert sent to ${successfulEmails.length} of ${contactsWithEmail.length} contacts`
-          : "Failed to send emergency alerts. Please try again.",
-      sosId: `${userId}_${Date.now()}`, // Unique SOS ID for tracking
-      location: {
-        latitude: location.latitude,
-        longitude: location.longitude,
-        accuracy: location.accuracy,
-      },
+          ? `Emergency alert sent to ${successfulEmails.length} of ${contactsWithEmail.length} contacts.`
+          : "Failed to send emergency alerts.",
+      sosId: `${userId}_${Date.now()}`,
+      location,
       contactsNotified: successfulEmails.length,
       totalContacts: contactsWithEmail.length,
       timestamp: new Date().toISOString(),
-      emailResults: {
-        successful: successfulEmails.map((result) => ({
-          contactId: result.contact.id,
-          contactName: result.contact.contact_name,
-          email: result.contact.contact_email,
-          messageId: result.messageId,
-        })),
-        failed: failedEmails.map((result) => ({
-          contactId: result.contact.id,
-          contactName: result.contact.contact_name,
-          email: result.contact.contact_email,
-          error: result.error,
-          errorCode: result.errorCode,
-        })),
-      },
+      emailResults: { successful: successfulEmails, failed: failedEmails },
     };
 
-    // Send user copy if email service is working
+    // Send copy to user
     if (user.email && emailService.isServiceReady()) {
       try {
         await emailService.sendEmergencyAlert(user.email, userName, location);
-        console.log(`SOS confirmation sent to user at ${user.email}`);
       } catch (error) {
-        console.error(
-          `Failed to send SOS confirmation to user: ${error.message}`
-        );
+        console.warn("Failed to send user copy:", error.message);
       }
     }
 
-    // Send appropriate HTTP status
-    const statusCode = successfulEmails.length > 0 ? 200 : 500;
-    res.status(statusCode).json(response);
+    res.status(successfulEmails.length > 0 ? 200 : 500).json(response);
   } catch (error) {
     console.error("SOS trigger error:", error);
-
-    // Remove cooldown on error to allow retry
-    const cooldownKey = `user_${userId}`;
-    sosCooldowns.delete(cooldownKey);
-
+    sosCooldowns.delete(`user_${req.user.id}`);
     res.status(500).json({
       success: false,
-      message: "Failed to process SOS alert. Please try again.",
-      error:
-        process.env.NODE_ENV === "development"
-          ? error.message
-          : "Internal server error",
+      message: "Failed to process SOS alert.",
     });
   }
 };
 
-// --- NEW FUNCTION: Check if a plate has been captured in the last 3 hours ---
+// ===========================================================
+// 🚗 CHECK RECENT AUTO CAPTURE (3 HOURS)
+// ===========================================================
 exports.checkRecentAutoCapture = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    // Calculate timestamp for 3 hours ago
     const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000)
       .toISOString()
       .slice(0, 19)
@@ -220,191 +158,160 @@ exports.checkRecentAutoCapture = async (req, res) => {
       [userId, threeHoursAgo]
     );
 
-    if (recentCapture.length > 0) {
-      // Plate found in the last 3 hours
+    if (recentCapture.length > 0)
       return res.json({
         success: true,
         isRecent: true,
         license_plate: recentCapture[0].license_plate,
         captured_at: recentCapture[0].captured_at,
-        message: `License plate ${recentCapture[0].license_plate} was captured recently.`,
       });
-    }
 
-    // No recent plate found
-    res.json({
-      success: true,
-      isRecent: false,
-      message: "No recent license plate capture found.",
-    });
+    res.json({ success: true, isRecent: false });
   } catch (error) {
     console.error("Check recent auto capture error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to check recent auto capture.",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
 
-// --- MODIFIED FUNCTION: Night Tracking Update ---
-
-// POST /api/safety/night-track/update
-// Purpose: Receive user's live location and auto number, and send tracking email.
+// ===========================================================
+// 🌙 NIGHT MODE TRACKING UPDATE (Fixed + Immediate Mail)
+// ===========================================================
 exports.sendNightLocationUpdate = async (req, res) => {
   try {
     const userId = req.user.id;
-    // Receive autoNumber directly from the request body
-    const { latitude, longitude, accuracy } = req.body.location;
-    const autoNumber = req.body.autoNumber || null; // New field
+    const { location, autoNumber } = req.body;
 
-    // 1. Validate input
-    if (!latitude || !longitude) {
+    if (!location || !location.latitude || !location.longitude) {
       return res.status(400).json({
         success: false,
-        message: "Valid latitude and longitude are required",
+        message: "Valid latitude and longitude are required.",
       });
     }
 
-    // 2. Get user information (name, email)
+    // Fetch user info
     const [users] = await db.query(
-      "SELECT id, username, full_name, phone_number, email FROM users WHERE id = ?",
+      "SELECT id, username, full_name, email FROM users WHERE id = ?",
       [userId]
     );
+    if (users.length === 0)
+      return res.status(404).json({ success: false, message: "User not found" });
 
-    if (users.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
     const user = users[0];
     const userName = user.full_name || user.username;
 
-    // 3. Get emergency contacts with email
-    const [emergencyContacts] = await db.query(
-      "SELECT id, contact_name, contact_phone, contact_email FROM emergency_contacts WHERE user_id = ? AND contact_email IS NOT NULL ORDER BY created_at ASC",
+    // Fetch emergency contacts with emails
+    const [contacts] = await db.query(
+      "SELECT contact_name, contact_email FROM emergency_contacts WHERE user_id = ? AND contact_email IS NOT NULL",
       [userId]
     );
 
-    // Check if any contacts are available to send to
-    if (emergencyContacts.length === 0) {
-      // NOTE: This intentionally returns 200 OK but sets success to false and includes a stop flag.
-      return res.status(200).json({
+    if (!contacts.length) {
+      console.warn(`No emergency contacts found for ${userName}`);
+      return res.json({
         success: false,
-        message:
-          "No contacts with email configured for Night Mode tracking. Stopping updates.",
-        noContacts: true,
+        message: "No emergency contacts configured with email.",
       });
     }
 
-    // 4. Prepare location object
-    const location = { latitude, longitude, accuracy: accuracy || 0 };
+    // Prepare email sending
+    const locationData = {
+      latitude: parseFloat(location.latitude),
+      longitude: parseFloat(location.longitude),
+      accuracy: location.accuracy || null,
+    };
 
-    // 5. Send tracking emails to all contacts
-    const trackingPromises = emergencyContacts.map((contact) =>
+    console.log(
+      `📍 [NightTrack] ${userName} -> Sending location to ${contacts.length} contacts:`,
+      locationData
+    );
+
+    // Send emails concurrently
+    const emailPromises = contacts.map((c) =>
       emailService.sendLocationTrackingEmail(
-        contact.contact_email,
+        c.contact_email,
         userName,
-        location,
-        autoNumber // Pass the received autoNumber to the email service
+        locationData,
+        autoNumber
       )
     );
 
-    const emailResults = await Promise.all(trackingPromises);
-    const successfulEmails = emailResults.filter((result) => result.success);
+    const results = await Promise.allSettled(emailPromises);
+    const successful = results.filter(
+      (r) => r.status === "fulfilled" && r.value.success
+    ).length;
 
     console.log(
-      `Night Track: Sent updates to ${successfulEmails.length} contacts.`
+      `📩 [NightTrack] Sent ${successful}/${contacts.length} Night Mode tracking emails.`
     );
 
     res.json({
-      success: successfulEmails.length > 0,
-      message: `Location update sent to ${successfulEmails.length} contact(s).`,
+      success: successful > 0,
+      message:
+        successful > 0
+          ? `Night Mode update sent to ${successful} of ${contacts.length} contacts.`
+          : "Failed to send tracking emails.",
       data: {
-        license_plate: autoNumber, // Return the plate back to the client
-        contactsSent: successfulEmails.length,
-        totalContacts: emergencyContacts.length,
-        location: location,
+        userName,
+        autoNumber,
+        location: locationData,
+        contactsCount: contacts.length,
+        sentCount: successful,
       },
     });
   } catch (error) {
-    console.error("Night location update error:", error);
+    console.error("❌ Night location update error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to send night location update.",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      message: "Failed to send Night Mode update email.",
+      error: error.message,
     });
   }
 };
 
-// --- Existing SOS Routes (keeping for context) ---
-
-// POST /api/safety/capture-auto
-// Purpose: Process image, extract number plate via Gemini, and store data
+// ===========================================================
+// 📷 AUTO NUMBER CAPTURE (Gemini AI Integration)
+// ===========================================================
 exports.captureAutoNumber = async (req, res) => {
   try {
     const userId = req.user.id;
     const { imageBase64, latitude, longitude } = req.body;
 
-    if (!imageBase64 || !latitude || !longitude) {
+    if (!imageBase64 || !latitude || !longitude)
       return res.status(400).json({
         success: false,
         message: "Image data, latitude, and longitude are required.",
       });
-    }
 
-    // 1. Extract License Plate using Gemini
-    let licensePlate;
+    let licensePlate = "UNKNOWN_PLATE";
     try {
       licensePlate = await extractLicensePlate(imageBase64);
       console.log("Gemini extracted plate:", licensePlate);
-
-      if (!licensePlate || licensePlate.length < 5) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "AI failed to detect a valid license plate in the image. Please try a clearer photo.",
-        });
-      }
     } catch (aiError) {
-      console.error("AI Extraction Error:", aiError.message);
-      // Log the AI error but continue to return a 503/500 if the service failed entirely
-      return res.status(503).json({
-        success: false,
-        message:
-          "AI service failed to process the image. Check Gemini API key or try again later.",
-        details:
-          process.env.NODE_ENV === "development" ? aiError.message : undefined,
-      });
+      console.warn("Gemini AI failed:", aiError.message);
     }
 
-    // 2. Reverse Geocode Location (Non-blocking, fallback to coords)
+    if (!licensePlate || licensePlate.length < 5)
+      licensePlate = "UNKNOWN_PLATE";
+
     let locationAddress = `${parseFloat(latitude).toFixed(6)}, ${parseFloat(
       longitude
     ).toFixed(6)}`;
     try {
-      // FIX: Ensure that the locationService method is being called correctly
-      // and handle the potential rejection by Nominatim.
       const addressData = await locationService.reverseGeocode(
         latitude,
         longitude
       );
-      if (addressData && addressData.display_name) {
-        locationAddress = addressData.display_name;
-      }
+      if (addressData?.display_name) locationAddress = addressData.display_name;
     } catch (geoError) {
-      // If location service fails (e.g., Nominatim times out), we should catch and continue
-      console.warn(
-        "Reverse geocoding failed, storing raw coordinates. Error:",
-        geoError.message
-      );
+      console.warn("Reverse geocoding failed:", geoError.message);
     }
 
-    // 3. Store in Database
     const [result] = await db.query(
       `INSERT INTO auto_captures (user_id, license_plate, capture_latitude, capture_longitude, location_address)
-             VALUES (?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?)`,
       [userId, licensePlate, latitude, longitude, locationAddress]
     );
 
@@ -422,28 +329,24 @@ exports.captureAutoNumber = async (req, res) => {
     console.error("Auto number capture error:", error);
     res.status(500).json({
       success: false,
-      // FIX: Use a less specific error message to the user, but log the detail
-      message: "Internal server error processing capture.",
-      error:
-        process.env.NODE_ENV === "development"
-          ? error.message
-          : "Internal server error",
+      message: "Internal server error while processing capture.",
     });
   }
 };
 
-// GET /api/safety/capture-history
-// Purpose: Fetch all previous auto number plate captures for the current user
+// ===========================================================
+// 📜 AUTO CAPTURE HISTORY
+// ===========================================================
 exports.getAutoCaptureHistory = async (req, res) => {
   try {
     const userId = req.user.id;
 
     const [history] = await db.query(
       `SELECT id, license_plate, capture_latitude, capture_longitude, location_address, captured_at
-             FROM auto_captures
-             WHERE user_id = ?
-             ORDER BY captured_at DESC
-             LIMIT 50`,
+       FROM auto_captures
+       WHERE user_id = ?
+       ORDER BY captured_at DESC
+       LIMIT 50`,
       [userId]
     );
 
@@ -469,8 +372,9 @@ exports.getAutoCaptureHistory = async (req, res) => {
   }
 };
 
-// GET /api/sos/status
-// Purpose: Check SOS status and cooldown
+// ===========================================================
+// 🔄 SOS STATUS CHECK (Fixed)
+// ===========================================================
 exports.getSOSStatus = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -478,12 +382,14 @@ exports.getSOSStatus = async (req, res) => {
     const now = Date.now();
     const lastSosTime = sosCooldowns.get(cooldownKey);
 
+    let canTrigger = true;
+    let cooldownRemaining = 0;
+
     if (lastSosTime && now - lastSosTime < 60000) {
       canTrigger = false;
       cooldownRemaining = Math.ceil((60000 - (now - lastSosTime)) / 1000);
     }
 
-    // Get emergency contacts count
     const [contactCount] = await db.query(
       "SELECT COUNT(*) as count FROM emergency_contacts WHERE user_id = ? AND contact_email IS NOT NULL",
       [userId]
@@ -491,8 +397,8 @@ exports.getSOSStatus = async (req, res) => {
 
     res.json({
       success: true,
-      canTrigger: canTrigger,
-      cooldownRemaining: cooldownRemaining,
+      canTrigger,
+      cooldownRemaining,
       emergencyContactsWithEmail: contactCount[0].count,
       emailServiceReady: emailService.isServiceReady(),
     });
@@ -505,12 +411,12 @@ exports.getSOSStatus = async (req, res) => {
   }
 };
 
-// GET /api/sos/logs
-// Purpose: Get SOS history for the current user
+// ===========================================================
+// 🧾 SOS LOG HISTORY
+// ===========================================================
 exports.getSOSLogs = async (req, res) => {
   try {
     const userId = req.user.id;
-
     const [logs] = await db.query(
       `SELECT id, latitude, longitude, accuracy, contacts_count, created_at
        FROM sos_logs
@@ -543,20 +449,18 @@ exports.getSOSLogs = async (req, res) => {
   }
 };
 
-// POST /api/sos/test-email
-// Purpose: Test email service configuration (admin only or with special flag)
+// ===========================================================
+// 🧪 TEST EMAIL SERVICE
+// ===========================================================
 exports.testEmailService = async (req, res) => {
   try {
-    // Only allow in development or with special test flag
     if (process.env.NODE_ENV === "production" && !req.body.forceTest) {
-      return res.status(403).json({
-        success: false,
-        message: "Email testing not allowed in production",
-      });
+      return res
+        .status(403)
+        .json({ success: false, message: "Email testing not allowed in production." });
     }
 
     const result = await emailService.testConfiguration();
-
     res.json({
       success: result.success,
       message: result.message,
@@ -567,33 +471,32 @@ exports.testEmailService = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to test email service",
-      error: error.message,
     });
   }
 };
 
-// Helper function to clean up old cooldown entries (call periodically)
+// ===========================================================
+// 🧹 CLEANUP COOL DOWNS
+// ===========================================================
 function cleanupCooldowns() {
   const now = Date.now();
-  const oneHour = 60 * 60 * 1000; // 1 hour
-
+  const oneHour = 60 * 60 * 1000;
   for (const [key, timestamp] of sosCooldowns.entries()) {
-    if (now - timestamp > oneHour) {
-      sosCooldowns.delete(key);
-    }
+    if (now - timestamp > oneHour) sosCooldowns.delete(key);
   }
 }
-
-// Cleanup cooldowns every 10 minutes
 setInterval(cleanupCooldowns, 10 * 60 * 1000);
 
+// ===========================================================
+// EXPORTS
+// ===========================================================
 module.exports = {
   triggerSOS: exports.triggerSOS,
   getSOSStatus: exports.getSOSStatus,
   getSOSLogs: exports.getSOSLogs,
   testEmailService: exports.testEmailService,
-  captureAutoNumber: exports.captureAutoNumber, // Export existing function
-  getAutoCaptureHistory: exports.getAutoCaptureHistory, // Export existing function
-  sendNightLocationUpdate: exports.sendNightLocationUpdate, // Export modified function
-  checkRecentAutoCapture: exports.checkRecentAutoCapture, // Export new function
+  captureAutoNumber: exports.captureAutoNumber,
+  getAutoCaptureHistory: exports.getAutoCaptureHistory,
+  sendNightLocationUpdate: exports.sendNightLocationUpdate,
+  checkRecentAutoCapture: exports.checkRecentAutoCapture,
 };

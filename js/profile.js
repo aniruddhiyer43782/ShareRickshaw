@@ -1,416 +1,328 @@
-// Profile page logic
-
+// js/profile.js
 document.addEventListener("DOMContentLoaded", async () => {
-  // Check if user is logged in
-  if (!requireAuth()) {
-    return;
-  }
+  if (!requireAuth()) return;
 
-  // NOTE: API_BASE_URL is now accessed globally from js/auth.js
+  const token = localStorage.getItem("token");
+  const API_URL = window.API_BASE_URL || "http://localhost:3000/api";
 
-  // Get DOM elements
+  // DOM sections
   const userProfileSection = document.getElementById("user-profile-section");
-  const autowalaProfileSection = document.getElementById(
-    "autowala-profile-section"
-  );
-  const emergencyContactsSection = document.getElementById(
-    "emergency-contacts-section"
-  );
+  const autowalaProfileSection = document.getElementById("autowala-profile-section");
+  const emergencyContactsSection = document.getElementById("emergency-contacts-section");
 
-  // Fetch profile data
   try {
-    // Use the globally available API_BASE_URL
-    const response = await fetch(`${API_BASE_URL}/profile`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
+    const res = await fetch(`${API_URL}/profile`, {
+      headers: { Authorization: `Bearer ${token}` }
     });
 
-    const data = await response.json();
-
-    if (!data.success) {
-      if (response.status === 401) {
-        // Token invalid or expired
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userData");
-        window.location.href = "login.html";
-        return;
-      }
-      throw new Error(data.message);
-    }
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
 
     const user = data.user;
 
-    // Render profile based on role
-    if (user.role === "user") {
-      renderUserProfile(user);
-    } else if (user.role === "autowala") {
+    if (user.role === "autowala" && autowalaProfileSection) {
       renderAutowalaProfile(user);
+    } else if (user.role === "user" && userProfileSection) {
+      renderUserProfile(user);
     }
-  } catch (error) {
-    console.error("Error fetching profile:", error);
+  } catch (err) {
+    console.error("Error loading profile:", err);
     alert("Failed to load profile. Please try again.");
   }
 
-  // Render user profile
+  // USER PROFILE RENDER
   function renderUserProfile(user) {
-    userProfileSection.classList.remove("hidden");
-    emergencyContactsSection.classList.remove("hidden");
+    userProfileSection?.classList.remove("hidden");
+    emergencyContactsSection?.classList.remove("hidden");
 
-    // Fill in profile data - using ?? 'N/A' for textContent assignment robustness
-    document.getElementById("display-username").textContent =
-      user.username ?? "N/A";
-    document.getElementById("display-email").textContent = user.email ?? "N/A";
+    document.getElementById("display-username").value = user.username || "";
+    document.getElementById("display-email").value = user.email || "";
     document.getElementById("user-phone").value = user.phone_number || "";
 
-    // Render emergency contacts
-    renderEmergencyContacts(user.emergency_contacts || []);
-
-    // Set up event listeners
     setupUserProfileEvents();
-    setupEmergencyContactsEvents();
   }
 
-  // Render autowala profile
+  // AUTOWALA PROFILE RENDER
   function renderAutowalaProfile(user) {
-    autowalaProfileSection.classList.remove("hidden");
+    autowalaProfileSection?.classList.remove("hidden");
 
-    // Fill in profile data - using ?? 'N/A' for textContent assignment robustness
-    document.getElementById("autowala-email").textContent = user.email ?? "N/A";
-    document.getElementById("autowala-driver-name").value =
-      user.driver_name || "";
+    document.getElementById("autowala-email").textContent = user.email || "N/A";
+    document.getElementById("autowala-driver-name").value = user.driver_name || "";
     document.getElementById("autowala-phone").value = user.phone_number || "";
-    document.getElementById("autowala-location").value =
-      user.operating_location || "";
-    document.getElementById("autowala-license-plate").textContent =
-      user.license_plate ?? "N/A";
+    document.getElementById("autowala-location").value = user.operating_location || "";
+    document.getElementById("autowala-license-plate").textContent = user.license_plate || "N/A";
 
-    // Set up event listeners
     setupAutowalaProfileEvents();
   }
 
-  // Render emergency contacts list
-  function renderEmergencyContacts(contacts) {
-    const contactsList = document.getElementById("contacts-list");
-    const emptyState = document.getElementById("empty-contacts-state");
-
-    if (contacts.length === 0) {
-      contactsList.innerHTML = "";
-      emptyState.classList.remove("hidden");
-    } else {
-      emptyState.classList.add("hidden");
-      contactsList.innerHTML = contacts
-        .map(
-          (contact) => `
-        <div class="contact-item">
-          <div class="contact-info">
-            <div class="contact-name">${contact.contact_name}</div>
-            <div class="contact-phone">📱 ${contact.contact_phone}</div>
-            ${contact.contact_email ? `<div class="contact-email">✉️ ${contact.contact_email}</div>` : ''}
-          </div>
-          <button class="btn-delete" data-contact-id="${contact.id}">Delete</button>
-        </div>
-      `
-        )
-        .join("");
-
-      // Add delete event listeners
-      document.querySelectorAll(".btn-delete").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const contactId = btn.getAttribute("data-contact-id");
-          deleteEmergencyContact(contactId);
-        });
-      });
-    }
-  }
-
-  // Set up user profile events
+  // USER EVENTS
   function setupUserProfileEvents() {
     const updateBtn = document.getElementById("update-user-profile");
     const phoneInput = document.getElementById("user-phone");
+    const usernameInput = document.getElementById("display-username");
+    const emailInput = document.getElementById("display-email");
+
     const successMsg = document.getElementById("profile-success");
     const errorMsg = document.getElementById("profile-error");
 
-    updateBtn.addEventListener("click", async () => {
+    updateBtn?.addEventListener("click", async () => {
       const phone = phoneInput.value.trim();
 
-      // Validate phone
-      const phoneRegex = /^\d{10}$/;
-      if (!phoneRegex.test(phone)) {
-        errorMsg.textContent = "Phone number must be exactly 10 digits";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
+      if (!/^\d{10}$/.test(phone)) {
+        showError(errorMsg, "Phone number must be 10 digits");
         return;
       }
 
-      updateBtn.disabled = true;
-      updateBtn.textContent = "Updating...";
+      const body = {
+        username: usernameInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone_number: phone
+      };
 
-      try {
-        const response = await fetch(`${API_BASE_URL}/profile`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken()}`,
-          },
-          body: JSON.stringify({
-            phone_number: phone,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          successMsg.textContent = "Profile updated successfully";
-          successMsg.classList.add("show");
-          setTimeout(() => successMsg.classList.remove("show"), 5000);
-        } else {
-          errorMsg.textContent = data.message || "Failed to update profile";
-          errorMsg.classList.add("show");
-          setTimeout(() => errorMsg.classList.remove("show"), 5000);
-        }
-      } catch (error) {
-        console.error("Update error:", error);
-        errorMsg.textContent = "Failed to update profile";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-      } finally {
-        updateBtn.disabled = false;
-        updateBtn.textContent = "Update Profile";
-      }
+      await updateProfile(body, successMsg, errorMsg, updateBtn);
     });
   }
 
-  // Set up autowala profile events
+  // AUTOWALA EVENTS
   function setupAutowalaProfileEvents() {
     const updateBtn = document.getElementById("update-autowala-profile");
-    const driverNameInput = document.getElementById("autowala-driver-name");
-    const phoneInput = document.getElementById("autowala-phone");
-    const locationInput = document.getElementById("autowala-location");
+
+    const driverName = document.getElementById("autowala-driver-name");
+    const phone = document.getElementById("autowala-phone");
+    const location = document.getElementById("autowala-location");
+
     const successMsg = document.getElementById("autowala-profile-success");
     const errorMsg = document.getElementById("autowala-profile-error");
 
-    updateBtn.addEventListener("click", async () => {
-      const driverName = driverNameInput.value.trim();
-      const phone = phoneInput.value.trim();
-      const location = locationInput.value.trim();
+    updateBtn?.addEventListener("click", async () => {
+      const body = {
+        driver_name: driverName.value.trim(),
+        phone_number: phone.value.trim(),
+        operating_location: location.value.trim()
+      };
 
-      // Validate fields
-      if (driverName && (driverName.length < 2 || driverName.length > 100)) {
-        errorMsg.textContent = "Driver name must be 2-100 characters";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
+      if (body.phone_number && !/^\d{10}$/.test(body.phone_number)) {
+        showError(errorMsg, "Phone number must be 10 digits");
         return;
       }
 
-      const phoneRegex = /^\d{10}$/;
-      if (phone && !phoneRegex.test(phone)) {
-        errorMsg.textContent = "Phone number must be exactly 10 digits";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-        return;
-      }
-
-      if (location && (location.length < 2 || location.length > 100)) {
-        errorMsg.textContent = "Operating location must be 2-100 characters";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-        return;
-      }
-
-      updateBtn.disabled = true;
-      updateBtn.textContent = "Updating...";
-
-      try {
-        const body = {};
-        if (driverName) body.driver_name = driverName;
-        if (phone) body.phone_number = phone;
-        if (location) body.operating_location = location;
-
-        const response = await fetch(`${API_BASE_URL}/profile`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken()}`,
-          },
-          body: JSON.stringify(body),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          successMsg.textContent = "Profile updated successfully";
-          successMsg.classList.add("show");
-          setTimeout(() => successMsg.classList.remove("show"), 5000);
-        } else {
-          errorMsg.textContent = data.message || "Failed to update profile";
-          errorMsg.classList.add("show");
-          setTimeout(() => errorMsg.classList.remove("show"), 5000);
-        }
-      } catch (error) {
-        console.error("Update error:", error);
-        errorMsg.textContent = "Failed to update profile";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-      } finally {
-        updateBtn.disabled = false;
-        updateBtn.textContent = "Update Profile";
-      }
+      await updateProfile(body, successMsg, errorMsg, updateBtn);
     });
   }
 
-  // Set up emergency contacts events
-  function setupEmergencyContactsEvents() {
-    const showFormBtn = document.getElementById("show-add-contact-form");
-    const addContactForm = document.getElementById("add-contact-form");
-    const saveContactBtn = document.getElementById("save-contact");
-    const cancelBtn = document.getElementById("cancel-add-contact");
-    const contactNameInput = document.getElementById("new-contact-name");
-    const contactPhoneInput = document.getElementById("new-contact-phone");
-    const contactEmailInput = document.getElementById("new-contact-email");
-
-  // Check if all required elements are found
-  if (!contactEmailInput) {
-    console.error('Email input field not found!');
-    return; // Exit if email field is not found
-  }
-
-  console.log('All elements found successfully');
-    const successMsg = document.getElementById("contacts-success");
-    const errorMsg = document.getElementById("contacts-error");
-
-    // Show add contact form
-    showFormBtn.addEventListener("click", () => {
-      addContactForm.classList.add("show");
-      showFormBtn.style.display = "none";
-    });
-
-    // Cancel add contact
-    cancelBtn.addEventListener("click", () => {
-      addContactForm.classList.remove("show");
-      showFormBtn.style.display = "block";
-      contactNameInput.value = "";
-      contactPhoneInput.value = "";
-      contactEmailInput.value = "";
-    });
-
-    // Save contact
-    saveContactBtn.addEventListener("click", async () => {
-      const name = contactNameInput.value.trim();
-      const phone = contactPhoneInput.value.trim();
-      const email = contactEmailInput.value.trim();
-
-      // Validate
-      if (name.length < 2 || name.length > 100) {
-        errorMsg.textContent = "Contact name must be 2-100 characters";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-        return;
-      }
-
-      const phoneRegex = /^\d{10}$/;
-      if (!phoneRegex.test(phone)) {
-        errorMsg.textContent = "Contact phone must be exactly 10 digits";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-        return;
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        errorMsg.textContent = "Please enter a valid email address";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-        return;
-      }
-
-      saveContactBtn.disabled = true;
-      saveContactBtn.textContent = "Saving...";
-
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/profile/emergency-contacts`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${getToken()}`,
-            },
-            body: JSON.stringify({
-              contact_name: name,
-              contact_phone: phone,
-              contact_email: email,
-            }),
-          }
-        );
-
-        const data = await response.json();
-
-        if (data.success) {
-          successMsg.textContent = "Emergency contact added";
-          successMsg.classList.add("show");
-          setTimeout(() => successMsg.classList.remove("show"), 5000);
-
-          // Reload profile to show new contact
-          location.reload();
-        } else {
-          errorMsg.textContent = data.message || "Failed to add contact";
-          errorMsg.classList.add("show");
-          setTimeout(() => errorMsg.classList.remove("show"), 5000);
-        }
-      } catch (error) {
-        console.error("Add contact error:", error);
-        errorMsg.textContent = "Failed to add contact";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-      } finally {
-        saveContactBtn.disabled = false;
-        saveContactBtn.textContent = "Save Contact";
-      }
-    });
-  }
-
-  // Delete emergency contact
-  async function deleteEmergencyContact(contactId) {
-    if (!confirm("Are you sure you want to delete this contact?")) {
-      return;
-    }
-
-    const successMsg = document.getElementById("contacts-success");
-    const errorMsg = document.getElementById("contacts-error");
+  // UNIVERSAL UPDATE FUNCTION
+  async function updateProfile(body, successMsg, errorMsg, button) {
+    button.disabled = true;
+    button.textContent = "Updating...";
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/profile/emergency-contacts/${contactId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_URL}/profile`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (data.success) {
-        successMsg.textContent = "Emergency contact deleted";
-        successMsg.classList.add("show");
-        setTimeout(() => successMsg.classList.remove("show"), 5000);
-
-        // Reload profile to show updated list
-        location.reload();
-      } else {
-        errorMsg.textContent = data.message || "Failed to delete contact";
-        errorMsg.classList.add("show");
-        setTimeout(() => errorMsg.classList.remove("show"), 5000);
-      }
-    } catch (error) {
-      console.error("Delete contact error:", error);
-      errorMsg.textContent = "Failed to delete contact";
-      errorMsg.classList.add("show");
-      setTimeout(() => errorMsg.classList.remove("show"), 5000);
+      if (data.success) showSuccess(successMsg, "Profile updated successfully");
+      else showError(errorMsg, data.message);
+    } catch (err) {
+      showError(errorMsg, "Update failed");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Update Profile";
     }
   }
+});
+
+// GLOBAL SUCCESS / ERROR
+window.showSuccess = function (el, msg) {
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = "green";
+  el.style.display = "block";
+  setTimeout(() => el.style.display = "none", 3000);
+};
+
+window.showError = function (el, msg) {
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = "red";
+  el.style.display = "block";
+  setTimeout(() => el.style.display = "none", 3000);
+};
+
+
+// ================================================================
+// 🚨 EMERGENCY CONTACTS MODULE
+// ================================================================
+document.addEventListener("DOMContentLoaded", () => {
+
+    const API_URL = window.API_BASE_URL || "http://localhost:3000/api";
+    const token = localStorage.getItem("token");
+
+    const contactsList = document.getElementById("contacts-list");
+    const contactsSuccess = document.getElementById("contacts-success");
+    const contactsError = document.getElementById("contacts-error");
+
+    const emptyState = document.getElementById("empty-contacts-state");
+
+    const showFormBtn = document.getElementById("show-add-contact-form");
+    const addForm = document.getElementById("add-contact-form");
+
+    const saveBtn = document.getElementById("save-contact");
+    const cancelBtn = document.getElementById("cancel-add-contact");
+
+    const inputName = document.getElementById("new-contact-name");
+    const inputPhone = document.getElementById("new-contact-phone");
+    const inputEmail = document.getElementById("new-contact-email");
+
+
+    // ====================================================
+    // LOAD CONTACTS ON PAGE LOAD
+    // ====================================================
+    loadContacts();
+
+    async function loadContacts() {
+        try {
+            const res = await fetch(`${API_URL}/profile`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await res.json();
+            if (!data.success) throw new Error("Failed to load contacts");
+
+            const contacts = data.user.emergency_contacts || [];
+
+            if (contacts.length === 0) {
+                contactsList.innerHTML = "";
+                emptyState.classList.remove("hidden");
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+            renderContacts(contacts);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+
+    // ====================================================
+    // RENDER CONTACT LIST
+    // ====================================================
+    function renderContacts(contacts) {
+        contactsList.innerHTML = "";
+
+        contacts.forEach(c => {
+            const div = document.createElement("div");
+            div.classList.add("contact-item");
+            div.innerHTML = `
+                <div>
+                    <strong>${c.contact_name}</strong><br>
+                    <span>${c.contact_phone}</span><br>
+                    <span>${c.contact_email}</span>
+                </div>
+                <button class="btn-delete" data-id="${c.id}">Delete</button>
+            `;
+
+            div.querySelector(".btn-delete").addEventListener("click", () => {
+                deleteContact(c.id);
+            });
+
+            contactsList.appendChild(div);
+        });
+    }
+
+
+    // ====================================================
+    // SHOW ADD FORM
+    // ====================================================
+    showFormBtn.addEventListener("click", () => {
+        addForm.style.display = "block";
+        showFormBtn.style.display = "none";
+    });
+
+    cancelBtn.addEventListener("click", () => {
+        addForm.style.display = "none";
+        showFormBtn.style.display = "block";
+        clearInputs();
+    });
+
+
+    // ====================================================
+    // SAVE NEW CONTACT
+    // ====================================================
+    saveBtn.addEventListener("click", async () => {
+
+        const body = {
+            contact_name: inputName.value.trim(),
+            contact_phone: inputPhone.value.trim(),
+            contact_email: inputEmail.value.trim(),
+        };
+
+        try {
+            const res = await fetch(`${API_URL}/profile/emergency-contacts`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                showError(contactsError, data.message);
+                return;
+            }
+
+            showSuccess(contactsSuccess, "Contact added successfully!");
+            addForm.style.display = "none";
+            showFormBtn.style.display = "block";
+
+            clearInputs();
+            loadContacts();
+
+        } catch (err) {
+            showError(contactsError, "Failed to add contact");
+        }
+    });
+
+
+    // ====================================================
+    // DELETE CONTACT
+    // ====================================================
+    async function deleteContact(id) {
+        try {
+            const res = await fetch(`${API_URL}/profile/emergency-contacts/${id}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                showError(contactsError, data.message);
+                return;
+            }
+
+            showSuccess(contactsSuccess, "Contact deleted");
+            loadContacts();
+
+        } catch (err) {
+            showError(contactsError, "Delete failed");
+        }
+    }
+
+
+    function clearInputs() {
+        inputName.value = "";
+        inputPhone.value = "";
+        inputEmail.value = "";
+    }
 });

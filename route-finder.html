@@ -5,80 +5,415 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Find the best share auto routes in Mumbai. Select your origin stand and destination to see available routes with fares, distances, and travel times."
+      content="Find the best multimodal travel options in Mumbai, combining direct auto, shared auto, and Western Line trains."
     />
-    <title>Route Finder - Mumbai Share Auto Finder</title>
+    <title>Multimodal Route Finder - Mumbai Share Auto Finder</title>
     <link rel="stylesheet" href="styles.css" />
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <!-- Leaflet Routing Machine CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"
+    />
+
+    <!-- Nominatim Geocoding Control CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"
+    />
+
+    <style>
+      /* ======= Global Layout Enhancements ======= */
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: #f8fafc;
+        margin: 0;
+      }
+
+      /* ======= Navbar ======= */
+      nav.navbar {
+        background: #fff;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        padding: 14px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .nav-brand {
+        font-weight: 700;
+        font-size: 20px;
+        color: #023047;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .nav-links a {
+        color: #023047;
+        font-weight: 500;
+        font-size: 15px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        text-decoration: none;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        background: #0077b6;
+        color: white;
+      }
+
+      /* ======= Page Header ======= */
+      .page-header {
+        text-align: center;
+        padding: 80px 20px 60px;
+        background: linear-gradient(135deg, #0077b6, #00b4d8);
+        color: white;
+      }
+
+      .page-header h1 {
+        font-size: 40px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .page-header p {
+        font-size: 18px;
+        opacity: 0.9;
+      }
+
+      /* ======= Layout ======= */
+      main.route-finder-layout {
+        background: #f8fafc;
+        padding: 60px 40px;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+      }
+
+      /* ======= Card Styling ======= */
+      .calculator-card {
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 119, 182, 0.15);
+        padding: 30px;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        flex: 1;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #023047;
+        margin-bottom: 6px;
+        font-size: 14px;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.6px solid #d0d7de;
+        border-radius: 12px;
+        font-size: 15px;
+        background: #f9fbfc;
+        transition: all 0.3s ease;
+      }
+
+      .form-input:focus {
+        border-color: #0077b6;
+        background: white;
+        box-shadow: 0 0 8px rgba(0, 119, 182, 0.25);
+        outline: none;
+      }
+
+      .location-input-btn {
+        position: absolute;
+        right: 1px;
+        top: 1px;
+        height: calc(100% - 2px);
+        background: linear-gradient(90deg, #0077b6, #00b4d8);
+        color: white;
+        border: none;
+        border-radius: 0 12px 12px 0;
+        padding: 0 12px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.25s ease;
+      }
+
+      .location-input-btn:hover {
+        transform: scale(1.03);
+      }
+
+      /* ======= Buttons ======= */
+      .button-group {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, #0077b6, #00b4d8);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(90deg, #0096c7, #00b4d8);
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #e0f7fa;
+        color: #0077b6;
+      }
+
+      .btn-secondary:hover {
+        background: #b2ebf2;
+      }
+
+      /* ======= Map ======= */
+      #mapContainer {
+        border-radius: 18px;
+        box-shadow: 0 8px 18px rgba(0, 119, 182, 0.15);
+        margin-top: 25px;
+        height: 480px;
+      }
+
+      /* ======= Results Section ======= */
+      #resultsContainer {
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 4px 14px rgba(0, 119, 182, 0.1);
+        padding: 25px 30px;
+      }
+
+      #resultsHeader {
+        font-size: 22px;
+        font-weight: 700;
+        color: #023047;
+        margin-bottom: 14px;
+      }
+
+      .route-option-card {
+        border-radius: 14px;
+        background: #fdfdfd;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        margin-bottom: 18px;
+        padding: 18px 20px;
+        transition: all 0.3s ease;
+      }
+
+      .route-option-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 14px rgba(0, 119, 182, 0.2);
+      }
+
+      .route-option-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+
+      .route-option-title {
+        font-weight: 600;
+        color: #023047;
+      }
+
+      .route-summary-cost {
+        color: #0077b6;
+        font-weight: 700;
+      }
+
+      .route-summary-time {
+        color: #0096c7;
+        font-weight: 500;
+      }
+
+      .route-step {
+        padding-left: 8px;
+        border-left: 3px solid #00b4d8;
+        margin: 6px 0;
+      }
+
+      .route-step-icon {
+        margin-right: 6px;
+      }
+
+      .active-route {
+        border: 2px solid #0077b6 !important;
+        background: #e3f2fd;
+        box-shadow: 0 0 10px rgba(0, 119, 182, 0.3);
+      }
+
+      /* ======= Footer ======= */
+      footer.footer {
+        background: #023047;
+        color: #fff;
+        padding: 25px 20px;
+        margin-top: 50px;
+      }
+
+      .footer-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-links a {
+        display: block;
+        color: #fff;
+        text-decoration: none;
+        margin-bottom: 5px;
+        font-size: 14px;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+
+      /* ======= Responsive ======= */
+      @media (max-width: 992px) {
+        main.route-finder-layout {
+          grid-template-columns: 1fr;
+          padding: 30px 20px;
+        }
+
+        #resultsContainer {
+          margin-top: 25px;
+        }
+      }
+    </style>
   </head>
+
   <body>
+    <!-- ======= Navigation Bar ======= -->
     <nav class="navbar">
-      <div class="nav-container">
-        <div class="nav-brand">🛺 Mumbai Share Auto</div>
-
-        <ul class="nav-links" id="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="fare-calculator.html">Fare Calculator</a></li>
-          <li><a href="stands-map.html">Find Stands</a></li>
-          <li><a href="route-finder.html" class="active">Route Finder</a></li>
-          <li><a href="safety.html">Safety</a></li>
-        </ul>
-
-        <button class="hamburger" aria-label="Open navigation menu">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
+      <div class="nav-brand">🛺 Mumbai Share Auto</div>
+      <div class="nav-links">
+        <a href="index.html">🏠 Home</a>
+        <a href="fare-calculator.html">💰 Fare Calculator</a>
+        <a href="stands-map.html">🗺️ Find Stands</a>
+        <a href="route-finder.html" class="active">🎯 Route Finder</a>
+        <a href="safety.html">🚨 Safety</a>
+        <a href="http://localhost:5500.html">📱 Booking</a>
+        <a href="profile.html">👤 Profile</a>
+        <a href="logout.html">🚪 Logout</a>
       </div>
     </nav>
 
-    <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu" aria-hidden="true">
-      <button class="mobile-menu-close" aria-label="Close navigation menu">
-        &times;
-      </button>
-      <ul class="mobile-nav-links" id="mobile-nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="fare-calculator.html">Fare Calculator</a></li>
-        <li><a href="stands-map.html">Find Stands</a></li>
-        <li><a href="route-finder.html" class="active">Route Finder</a></li>
-        <li><a href="safety.html">Safety</a></li>
-      </ul>
-    </div>
-
+    <!-- ======= Header ======= -->
     <section class="page-header">
-      <h1>Find Best Share Auto Routes</h1>
-      <p class="subtitle">
-        Select your origin stand and destination to see available routes.
+      <h1>Plan Your Journey Smarter 🚆🛺</h1>
+      <p>
+        Compare shared autos, direct autos, and train combos — all powered by
+        AI-based routes.
       </p>
     </section>
 
-    <section class="calculator-section">
-      <div style="max-width: 1200px; margin: 0 auto; width: 100%">
+    <!-- ======= Main Layout ======= -->
+    <main class="route-finder-layout">
+      <!-- Left: Inputs & Map -->
+      <section class="calculator-section" style="padding: 0; background: none">
         <div class="calculator-card">
           <form id="routeFinderForm">
-            <div class="form-group">
-              <label for="standSelect">From (Stand)</label>
-              <select id="standSelect" class="form-select" required>
-                <option value="">-- Select a Stand --</option>
-              </select>
-              <div id="standError" class="error-message"></div>
-            </div>
+            <div class="input-group">
+              <div class="form-group">
+                <label for="startLocationInput">Start Location</label>
+                <div id="startLocationError" class="error-message"></div>
 
-            <div class="form-group">
-              <label for="destinationInput">Destination</label>
-              <input
-                type="text"
-                id="destinationInput"
-                class="form-input"
-                placeholder="e.g., Linking Road, Bandra Market"
-                required
-              />
-              <div id="destinationError" class="error-message"></div>
+                <input
+                  type="text"
+                  id="startLocationInput"
+                  class="form-input"
+                  placeholder="Type start location or use map"
+                  required
+                />
+                <button
+                  type="button"
+                  id="pickStartOnMapBtn"
+                  class="location-input-btn"
+                  title="Pick on map"
+                >
+                  📍
+                </button>
+                <input type="hidden" id="startLat" />
+                <input type="hidden" id="startLng" />
+              </div>
+
+              <div class="form-group">
+                <label for="endLocationInput">End Location</label>
+                <div id="endLocationError" class="error-message"></div>
+
+                <input
+                  type="text"
+                  id="endLocationInput"
+                  class="form-input"
+                  placeholder="Type end location or use map"
+                  required
+                />
+                <button
+                  type="button"
+                  id="pickEndOnMapBtn"
+                  class="location-input-btn"
+                  title="Pick on map"
+                >
+                  🎯
+                </button>
+                <input type="hidden" id="endLat" />
+                <input type="hidden" id="endLng" />
+              </div>
             </div>
 
             <div class="button-group">
-              <button type="button" id="findRouteBtn" class="btn btn-primary">
-                Find Route
+              <button
+                type="button"
+                id="findRouteBtn"
+                class="btn btn-primary full-width"
+              >
+                Find Routes
               </button>
               <button type="button" id="resetBtn" class="btn btn-secondary">
                 Reset
@@ -86,42 +421,44 @@
             </div>
           </form>
 
-          <div id="resultsContainer" class="results-container">
-            <h2 id="resultsHeader" class="section-heading"></h2>
-            <div id="routeCardsContainer"></div>
+          <div id="mapContainer"></div>
+        </div>
+      </section>
+
+      <!-- Right: Results Panel -->
+      <section id="resultsPanel">
+        <div id="resultsContainer">
+          <h2 id="resultsHeader">🚦 Available Travel Options</h2>
+
+          <div id="routeLoading" style="display: block">
             <div
-              id="noResultsMessage"
-              class="no-results-message"
-              style="display: none"
+              class="spinner-overlay"
+              style="position: relative; height: 100px; padding: 0"
             >
-              No direct share-auto route found. Try nearby stands.
+              <div class="spinner"></div>
+              <p>Enter locations to find travel options</p>
             </div>
           </div>
 
-          <div
-            id="recentSearchesContainer"
-            class="recent-searches"
-            style="display: none"
-          >
-            <h3>Recent Searches</h3>
-            <div id="recentSearchesList"></div>
+          <div id="routeCardsContainer"></div>
+
+          <div id="noResultsMessage" class="no-results-message" style="display: none">
+            Could not find any suitable routes. Try adjusting your start/end
+            locations.
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
+    <!-- ======= Footer ======= -->
     <footer class="footer">
       <div class="footer-container">
         <div class="footer-left">
-          <p class="footer-copyright">
-            &copy; 2024 Mumbai Share Auto Finder. All rights reserved.
-          </p>
-          <p class="footer-disclaimer">
-            Fares and routes are indicative. Please verify with drivers.
-          </p>
+          <p>&copy; 2024 Mumbai Share Auto Finder. All rights reserved.</p>
+          <p>Fares and routes are indicative. Please verify with drivers.</p>
         </div>
         <div class="footer-right">
-          <h3 class="footer-heading">Quick Links</h3>
+          <h3>Quick Links</h3>
           <nav class="footer-links">
             <a href="index.html">Home</a>
             <a href="fare-calculator.html">Fare Calculator</a>
@@ -133,9 +470,17 @@
       </div>
     </footer>
 
-    <noscript>For the best experience, please enable JavaScript</noscript>
+    <!-- ======= Scripts ======= -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="js/auth.js"></script>
     <script src="script.js"></script>
+    <script src="js/locationService.js"></script>
     <script src="route-finder.js"></script>
   </body>
 </html>

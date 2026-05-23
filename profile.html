@@ -1,474 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile - Mumbai Share Auto</title>
-    <link rel="stylesheet" href="styles.css" />
-    <style>
-      .profile-container {
-        max-width: 800px;
-        margin: 80px auto 40px;
-        padding: 20px;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile | Mumbai Share Auto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
 
-      .profile-heading {
-        font-size: 2rem;
-        margin-bottom: 30px;
-        color: #1a1a1a;
-      }
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+      color: #023047;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .navbar {
+      background: #ffffff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      padding: 14px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-brand { font-weight: 700; font-size: 20px; color: #023047; display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 16px; }
+    .nav-links a {
+      color: #023047;
+      font-weight: 500;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: #0077b6;
+      color: white;
+      transform: translateY(-1px);
+    }
+    .main-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 80vh;
+      padding: 40px 10px 60px 10px;
+      flex-grow: 1;
+    }
+    .profile-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      padding: 38px 32px;
+      width: 100%;
+      max-width: 540px;
+      margin-bottom: 32px;
+    }
+    .profile-heading { font-size: 26px; font-weight: 700; color: #0077b6; margin-bottom: 26px; text-align: center; }
+    .section-title { font-size: 20px; font-weight: 600; color: #0096c7; margin-bottom: 24px; border-bottom: 2px solid #e3f2fd; padding-bottom: 7px; }
+    .profile-field { margin-bottom: 18px; }
+    .profile-field label { display: block; margin-bottom: 7px; font-weight: 500; color: #023047; }
+    .profile-field input {
+      width: 100%; padding: 12px 13px; border: 1.7px solid #d0d7de;
+      border-radius: 12px; background: #f9fbfc; font-size: 15px; color: #023047;
+    }
+    .value-display { padding: 12px 13px; background: #f5faff; border-radius: 11px; font-size: 15px; color: #1a1a1a; }
+    .btn-primary {
+      width: 100%; background: linear-gradient(90deg, #0077b6, #0096c7);
+      color: white; font-weight: 600; font-size: 16px;
+      padding: 13px 0; border-radius: 12px; border: none;
+    }
+    .btn-secondary {
+      background: #e3f2fd; color: #0077b6;
+      font-weight: 600; font-size: 15px; border: none;
+      border-radius: 11px; padding: 12px 0;
+    }
+    .contact-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 10px; background: #f5fafe; border-radius: 8px; margin-bottom: 10px;
+    }
+    .btn-delete { background: #fff; color: #d32f2f; border: 1.5px solid #d32f2f; border-radius: 8px; padding: 8px 18px; cursor: pointer; }
+    footer { background: #023047; color: white; text-align: center; font-size: 14px; padding: 14px; margin-top: auto; }
+  </style>
+</head>
 
-      .profile-section {
-        background: #fff;
-        border-radius: 8px;
-        padding: 30px;
-        margin-bottom: 25px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .section-title {
-        font-size: 1.3rem;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #2196f3;
-      }
-
-      .profile-field {
-        margin-bottom: 20px;
-      }
-
-      .profile-field label {
-        display: block;
-        font-weight: 500;
-        color: #666;
-        font-size: 0.9rem;
-        margin-bottom: 5px;
-      }
-
-      .profile-field input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 1rem;
-        box-sizing: border-box;
-      }
-
-      .profile-field input:disabled {
-        background: #f5f5f5;
-        color: #666;
-        cursor: not-allowed;
-      }
-
-      .profile-field input:focus:not(:disabled) {
-        outline: none;
-        border-color: #2196f3;
-      }
-
-      .profile-field .value-display {
-        padding: 10px;
-        background: #f5f5f5;
-        border-radius: 6px;
-        font-size: 1rem;
-        color: #333;
-      }
-
-      .button-group {
-        display: flex;
-        gap: 15px;
-        margin-top: 20px;
-      }
-
-      .btn-primary {
-        padding: 12px 30px;
-        background: #2196f3;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.3s ease;
-      }
-
-      .btn-primary:hover:not(:disabled) {
-        background: #1976d2;
-      }
-
-      .btn-primary:disabled {
-        background: #90caf9;
-        cursor: not-allowed;
-      }
-
-      .btn-secondary {
-        padding: 12px 30px;
-        background: #fff;
-        color: #2196f3;
-        border: 2px solid #2196f3;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .btn-secondary:hover {
-        background: #e3f2fd;
-      }
-
-      .success-message,
-      .error-message {
-        padding: 12px;
-        border-radius: 6px;
-        margin-bottom: 20px;
-        display: none;
-      }
-
-      .success-message {
-        background: #e8f5e9;
-        color: #2e7d32;
-      }
-
-      .error-message {
-        background: #ffebee;
-        color: #d32f2f;
-      }
-
-      .success-message.show,
-      .error-message.show {
-        display: block;
-      }
-
-      /* Emergency Contacts Styles */
-      .contacts-list {
-        margin-top: 20px;
-      }
-
-      .contact-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px;
-        background: #f5f5f5;
-        border-radius: 6px;
-        margin-bottom: 10px;
-      }
-
-      .contact-info {
-        flex: 1;
-      }
-
-      .contact-name {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 5px;
-      }
-
-      .contact-phone {
-        color: #666;
-        font-size: 0.95rem;
-      }
-
-      .contact-email {
-        color: #666;
-        font-size: 0.9rem;
-        margin-top: 3px;
-        word-break: break-word;
-      }
-
-      .btn-delete {
-        padding: 8px 20px;
-        background: #fff;
-        color: #d32f2f;
-        border: 1px solid #d32f2f;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .btn-delete:hover {
-        background: #d32f2f;
-        color: #fff;
-      }
-
-      .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        color: #666;
-      }
-
-      .empty-state-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
-      }
-
-      .add-contact-form {
-        display: none;
-        margin-top: 20px;
-        padding: 20px;
-        background: #f9f9f9;
-        border-radius: 6px;
-      }
-
-      .add-contact-form.show {
-        display: block;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      @media (max-width: 768px) {
-        .profile-container {
-          margin: 40px 20px;
-        }
-
-        .profile-heading {
-          font-size: 1.5rem;
-        }
-
-        .profile-section {
-          padding: 20px;
-        }
-
-        .button-group {
-          flex-direction: column;
-        }
-
-        .contact-item {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .btn-delete {
-          margin-top: 10px;
-          width: 100%;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="nav-brand">🛺 Mumbai Share Auto</div>
-
-        <!-- Desktop Navigation -->
-        <ul class="nav-links" id="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="fare-calculator.html">Fare Calculator</a></li>
-          <li><a href="stands-map.html">Find Stands</a></li>
-          <li><a href="route-finder.html">Route Finder</a></li>
-          <li><a href="safety.html">Safety</a></li>
-        </ul>
-
-        <!-- Hamburger Menu Icon -->
-        <button class="hamburger" aria-label="Open navigation menu">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
-      </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu" aria-hidden="true">
-      <button class="mobile-menu-close" aria-label="Close navigation menu">
-        &times;
-      </button>
-      <ul class="mobile-nav-links" id="mobile-nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="fare-calculator.html">Fare Calculator</a></li>
-        <li><a href="stands-map.html">Find Stands</a></li>
-        <li><a href="route-finder.html">Route Finder</a></li>
-        <li><a href="safety.html">Safety</a></li>
-      </ul>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">🛺 <span>Mumbai Share Auto</span></div>
+    <div class="nav-links">
+      <a href="index.html">🏠 Home</a>
+      <a href="fare-calculator.html">💰 Fare Calculator</a>
+      <a href="stands-map.html">🗺️ Find Stands</a>
+      <a href="route-finder.html">🎯 Route Finder</a>
+      <a href="safety.html">🚨 Safety</a>
+      <a href="http://localhost:5500">📱 Booking</a>
+      <a href="profile.html" class="active">👤 Profile</a>
+      <a href="logout.html">🚪 Logout</a>
     </div>
+  </nav>
 
-    <!-- Profile Container -->
-    <div class="profile-container">
+  <main class="main-wrap">
+    <!-- User Profile -->
+<section id="user-profile-section" class="profile-card">
       <h1 class="profile-heading">My Profile</h1>
+      <h2 class="section-title">Profile Information</h2>
+      <div id="profile-success" class="success-message"></div>
+      <div id="profile-error" class="error-message"></div>
 
-      <!-- Profile Information Section (for regular users) -->
-      <div id="user-profile-section" class="profile-section hidden">
-        <h2 class="section-title">Profile Information</h2>
+      <div class="profile-field">
+        <label>Username</label>
+        <input type="text" id="display-username" />
+      </div>
+      <div class="profile-field">
+        <label>Email</label>
+        <input type="email" id="display-email" />
+      </div>
+      <div class="profile-field">
+        <label>Phone Number</label>
+        <input type="tel" id="user-phone" maxlength="10" placeholder="Enter phone number" />
+      </div>
+      <button class="btn-primary" id="update-user-profile">Update Profile</button>
+    </section>
 
-        <div id="profile-success" class="success-message"></div>
-        <div id="profile-error" class="error-message"></div>
+    <!-- Emergency Contacts -->
+<section id="emergency-contacts-section" class="profile-card">
+      <h2 class="section-title">Emergency Contacts</h2>
+      <div id="contacts-success" class="success-message"></div>
+      <div id="contacts-error" class="error-message"></div>
+      <div id="contacts-list" class="contacts-list"></div>
+      <div id="empty-contacts-state" class="empty-state hidden">
+        <div class="empty-state-icon">📱</div>
+        <p>No emergency contacts added yet.</p>
+      </div>
+      <div class="button-group">
+        <button class="btn-secondary" id="show-add-contact-form">Add Emergency Contact</button>
+      </div>
 
+      <form id="add-contact-form" class="add-contact-form">
         <div class="profile-field">
-          <label>Username</label>
-          <div class="value-display" id="display-username"></div>
+          <label>Contact Name *</label>
+          <input type="text" id="new-contact-name" placeholder="Contact name" />
         </div>
-
         <div class="profile-field">
-          <label>Email</label>
-          <div class="value-display" id="display-email"></div>
+          <label>Contact Phone *</label>
+          <input type="tel" id="new-contact-phone" maxlength="10" placeholder="Phone number" />
         </div>
-
         <div class="profile-field">
-          <label>Phone Number</label>
-          <input
-            type="tel"
-            id="user-phone"
-            maxlength="10"
-            placeholder="Enter phone number"
-          />
+          <label>Contact Email *</label>
+          <input type="email" id="new-contact-email" placeholder="Email address" />
         </div>
-
         <div class="button-group">
-          <button class="btn-primary" id="update-user-profile">
-            Update Profile
-          </button>
+          <button class="btn-primary" type="button" id="save-contact">Save Contact</button>
+          <button class="btn-secondary" type="button" id="cancel-add-contact">Cancel</button>
         </div>
-      </div>
+      </form>
+    </section>
+  </main>
 
-      <!-- Profile Information Section (for autowalas) -->
-      <div id="autowala-profile-section" class="profile-section hidden">
-        <h2 class="section-title">Profile Information</h2>
+  <footer>© 2025 ShareRickshaw | Smarter Mumbai Commutes</footer>
 
-        <div id="autowala-profile-success" class="success-message"></div>
-        <div id="autowala-profile-error" class="error-message"></div>
+<script src="js/auth.js"></script>
+<script src="js/profile.js"></script>
+<script src="script.js"></script>
 
-        <div class="profile-field">
-          <label>Email</label>
-          <div class="value-display" id="autowala-email"></div>
-        </div>
-
-        <div class="profile-field">
-          <label>Driver Name</label>
-          <input
-            type="text"
-            id="autowala-driver-name"
-            placeholder="Driver name"
-          />
-        </div>
-
-        <div class="profile-field">
-          <label>Phone Number</label>
-          <input
-            type="tel"
-            id="autowala-phone"
-            maxlength="10"
-            placeholder="Driver contact number"
-          />
-        </div>
-
-        <div class="profile-field">
-          <label>Operating Location</label>
-          <input
-            type="text"
-            id="autowala-location"
-            placeholder="Operating area/city"
-          />
-        </div>
-
-        <div class="profile-field">
-          <label>License Plate Number</label>
-          <div class="value-display" id="autowala-license-plate"></div>
-        </div>
-
-        <div class="button-group">
-          <button class="btn-primary" id="update-autowala-profile">
-            Update Profile
-          </button>
-        </div>
-      </div>
-
-      <!-- Emergency Contacts Section (only for regular users) -->
-      <div id="emergency-contacts-section" class="profile-section hidden">
-        <h2 class="section-title">Emergency Contacts</h2>
-
-        <div id="contacts-success" class="success-message"></div>
-        <div id="contacts-error" class="error-message"></div>
-
-        <div id="contacts-list" class="contacts-list">
-          <!-- Contacts will be dynamically inserted here -->
-        </div>
-
-        <div id="empty-contacts-state" class="empty-state hidden">
-          <div class="empty-state-icon">📱</div>
-          <p>No emergency contacts added yet</p>
-        </div>
-
-        <div class="button-group">
-          <button class="btn-secondary" id="show-add-contact-form">
-            Add Emergency Contact
-          </button>
-        </div>
-
-        <div id="add-contact-form" class="add-contact-form">
-          <div class="profile-field">
-            <label>Contact Name *</label>
-            <input
-              type="text"
-              id="new-contact-name"
-              placeholder="Contact name"
-            />
-          </div>
-
-          <div class="profile-field">
-            <label>Contact Phone *</label>
-            <input
-              type="tel"
-              id="new-contact-phone"
-              maxlength="10"
-              placeholder="Contact phone number"
-            />
-          </div>
-
-          <div class="profile-field">
-            <label>Contact Email *</label>
-            <input
-              type="email"
-              id="new-contact-email"
-              placeholder="Contact email address"
-              required
-            />
-            <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">
-              This email will receive emergency alerts when SOS is triggered
-            </small>
-          </div>
-
-          <div class="button-group">
-            <button class="btn-primary" id="save-contact">Save Contact</button>
-            <button class="btn-secondary" id="cancel-add-contact">
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-left">
-          <p class="footer-copyright">
-            &copy; 2024 Mumbai Share Auto Finder. All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
-
-    <script src="script.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/profile.js"></script>
-    <script>
-      // Check authentication immediately
-      if (!window.isLoggedIn()) {
-        window.location.href = "login.html";
-      } else {
-        // REDIRECT AUTOWALAS TO DEDICATED PAGE
-        const userData = window.getUserData();
-        if (userData && userData.role === "autowala") {
-          window.location.href = "autowala-profile.html";
-        }
-      }
-    </script>
-  </body>
+  <script>
+    if (!window.isLoggedIn()) {
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
 </html>

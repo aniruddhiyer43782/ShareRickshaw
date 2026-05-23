@@ -137,3 +137,18 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Local portable Node runtime/shims accidentally copied into the repo root
+/node.exe
+/nodevars.bat
+/npm
+/npm.cmd
+/npm.ps1
+/npx
+/npx.cmd
+/npx.ps1
+/corepack
+/corepack.cmd
+
+# Local editor workspace files
+*.code-workspace

@@ -1,0 +1,222 @@
+{
+  "summary": {
+    "evaluationType": "offline seeded-data route-planner evaluation",
+    "generatedAt": "2026-05-23T11:04:50.305Z",
+    "standsLoaded": 10,
+    "standRoutesLoaded": 2,
+    "cases": 3,
+    "validCases": 3,
+    "meanEvidenceRecall": 0,
+    "limitation": "This evaluates deterministic planner grounding on seed data only; it does not measure live API latency, MySQL availability, or Gemini response quality."
+  },
+  "results": [
+    {
+      "id": "andheri_to_malad",
+      "valid": true,
+      "expectedEvidence": [
+        "Western Line",
+        "Andheri",
+        "Malad"
+      ],
+      "matchedEvidence": [],
+      "evidenceRecall": 0,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 178,
+        "totalTravelTimeMinutes": 34,
+        "distanceKm": 10.09
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to name, take the shared auto towards Bandra Reclamation, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 16.02
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 16.02
+        }
+      },
+      "topCandidateScores": [
+        {
+          "standName": "name",
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 16.02,
+          "fare": 20,
+          "minutes": null
+        },
+        {
+          "standName": "name",
+          "destination": "Pali Hill",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 13.93,
+          "fare": 25,
+          "minutes": null
+        }
+      ]
+    },
+    {
+      "id": "bandra_to_pali_hill",
+      "valid": true,
+      "expectedEvidence": [
+        "Bandra Station West",
+        "Pali Hill"
+      ],
+      "matchedEvidence": [],
+      "evidenceRecall": 0,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 34,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 2.09
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to name, take the shared auto towards Bandra Reclamation, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 2.13
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 2.13
+        }
+      },
+      "topCandidateScores": [
+        {
+          "standName": "name",
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 2.13,
+          "fare": 20,
+          "minutes": null
+        },
+        {
+          "standName": "name",
+          "destination": "Pali Hill",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 0,
+          "fare": 25,
+          "minutes": null
+        }
+      ]
+    },
+    {
+      "id": "ghatkopar_to_asalpha",
+      "valid": true,
+      "expectedEvidence": [
+        "Ghatkopar Station East",
+        "Asalpha"
+      ],
+      "matchedEvidence": [],
+      "evidenceRecall": 0,
+      "direct": {
+        "type": "Direct Auto Estimate",
+        "estimatedCostRupees": 23,
+        "totalTravelTimeMinutes": 8,
+        "distanceKm": 1.38
+      },
+      "bestSharedAuto": {
+        "type": "Grounded Shared Auto Candidate",
+        "routeDescription": "Walk to name, take the shared auto towards Bandra Reclamation, then walk from the drop point to the destination.",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-stand-route-score",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 10.52
+        }
+      },
+      "fallback": {
+        "type": "Grounded Multimodal Fallback",
+        "estimatedCostRupees": 20,
+        "totalTravelTimeMinutes": null,
+        "evidence": {
+          "planner": "deterministic-fallback",
+          "standId": 1,
+          "standName": "name",
+          "routeId": 2,
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "sharedRouteKm": null,
+          "walkFromDropKm": 10.52
+        }
+      },
+      "topCandidateScores": [
+        {
+          "standName": "name",
+          "destination": "Bandra Reclamation",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 10.52,
+          "fare": 20,
+          "minutes": null
+        },
+        {
+          "standName": "name",
+          "destination": "Pali Hill",
+          "score": null,
+          "walkToStandKm": null,
+          "walkFromDropKm": 9.23,
+          "fare": 25,
+          "minutes": null
+        }
+      ]
+    }
+  ]
+}

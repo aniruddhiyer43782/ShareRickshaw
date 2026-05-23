@@ -1,0 +1,5 @@
+image_id,lighting_condition,ground_truth_plate,predicted_plate,exact_match,character_errors,notes
+plate_001,daylight,,,,,
+plate_002,daylight,,,,,
+plate_003,fluorescent,,,,,
+plate_004,low_light,,,,,

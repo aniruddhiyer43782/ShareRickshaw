@@ -1,0 +1,60 @@
+[
+  {
+    "id": "bandra_to_pali_hill_seed",
+    "startLat": 19.0544,
+    "startLng": 72.8406,
+    "endLat": 19.0630,
+    "endLng": 72.8290,
+    "expectedEvidence": ["Bandra Station West", "Pali Hill"]
+  },
+  {
+    "id": "andheri_to_midc_seed",
+    "startLat": 19.1197,
+    "startLng": 72.8464,
+    "endLat": 19.1203,
+    "endLng": 72.8680,
+    "expectedEvidence": ["Andheri Station East", "MIDC"]
+  },
+  {
+    "id": "dadar_to_shivaji_park_seed",
+    "startLat": 19.0183,
+    "startLng": 72.8469,
+    "endLat": 19.0300,
+    "endLng": 72.8370,
+    "expectedEvidence": ["Dadar TT", "Shivaji Park"]
+  },
+  {
+    "id": "kurla_to_kurla_market_seed",
+    "startLat": 19.0658,
+    "startLng": 72.8792,
+    "endLat": 19.0710,
+    "endLng": 72.8820,
+    "expectedEvidence": ["Kurla Station West", "Kurla Market"]
+  },
+  {
+    "id": "malad_to_orlem_seed",
+    "startLat": 19.1869,
+    "startLng": 72.8486,
+    "endLat": 19.1900,
+    "endLng": 72.8420,
+    "expectedEvidence": ["Malad Station West", "Orlem"]
+  },
+  {
+    "id": "powai_to_iit_bombay_night_seed",
+    "startLat": 19.1176,
+    "startLng": 72.9060,
+    "endLat": 19.1334,
+    "endLng": 72.9133,
+    "nightTravel": true,
+    "expectedEvidence": ["Powai Market", "IIT Bombay"]
+  },
+  {
+    "id": "ghatkopar_to_vikhroli_night_seed",
+    "startLat": 19.0865,
+    "startLng": 72.9081,
+    "endLat": 19.1025,
+    "endLng": 72.9250,
+    "nightTravel": true,
+    "expectedEvidence": ["Ghatkopar Station East", "Vikhroli"]
+  }
+]

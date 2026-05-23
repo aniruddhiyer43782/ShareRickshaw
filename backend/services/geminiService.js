@@ -23,7 +23,7 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
 const MAX_RETRIES = 5;
 
 // Define a JSON schema for structured output (number plate)
-const responseSchema = {
+const licensePlateSchema = {
   type: "OBJECT",
   properties: {
     licensePlate: {
@@ -35,13 +35,70 @@ const responseSchema = {
   required: ["licensePlate"],
 };
 
+// NEW: Define JSON schema for multimodal route output
+const routeSchema = {
+  type: "OBJECT",
+  properties: {
+    routeDescription: {
+      type: "STRING",
+      description:
+        "A summary of the suggested route, e.g., 'Walk to Borivali Station, take the Western Line train to Andheri, then take a share auto to your destination.'",
+    },
+    totalTravelTimeMinutes: {
+      type: "NUMBER",
+      description: "The estimated total travel time in minutes.",
+    },
+    estimatedCostRupees: {
+      type: "NUMBER",
+      description: "The estimated total cost in Indian Rupees (₹).",
+    },
+    steps: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          mode: {
+            type: "STRING",
+            enum: ["WALK", "TRAIN", "SHARED_AUTO", "AUTO"],
+            description: "The mode of transport for this step.",
+          },
+          instruction: {
+            type: "STRING",
+            description: "A detailed instruction for this step.",
+          },
+          durationMinutes: {
+            type: "NUMBER",
+            description: "Duration of this step in minutes.",
+          },
+          costRupees: {
+            type: "NUMBER",
+            description: "Cost of this step in Rupees.",
+          },
+        },
+        required: ["mode", "instruction", "durationMinutes", "costRupees"],
+      },
+    },
+  },
+  required: [
+    "routeDescription",
+    "totalTravelTimeMinutes",
+    "estimatedCostRupees",
+    "steps",
+  ],
+};
+
 /**
  * Executes a POST request to the Gemini API with exponential backoff.
  * @param {string} userPrompt - Text prompt for the model.
- * @param {string} base64Image - Base64 encoded image data.
+ * @param {string} base64Image - Base64 encoded image data (optional).
+ * @param {Object} schema - JSON schema for structured output (optional).
  * @returns {Promise<Object>} The parsed JSON response from the model.
  */
-async function callGeminiApiWithBackoff(userPrompt, base64Image) {
+async function callGeminiApiWithBackoff(
+  userPrompt,
+  base64Image = null,
+  schema = licensePlateSchema
+) {
   if (!fetch) {
     throw new Error(
       "node-fetch dependency not loaded. Cannot connect to Gemini API."
@@ -53,26 +110,21 @@ async function callGeminiApiWithBackoff(userPrompt, base64Image) {
     );
   }
 
-  const payload = {
-    // Contents array remains the same
-    contents: [
-      {
-        role: "user",
-        parts: [
-          { text: userPrompt },
-          {
-            inlineData: {
-              mimeType: "image/jpeg", // Assuming JPEG for common camera output
-              data: base64Image,
-            },
-          },
-        ],
+  const parts = [{ text: userPrompt }];
+  if (base64Image) {
+    parts.push({
+      inlineData: {
+        mimeType: "image/jpeg", // Assuming JPEG for common camera output
+        data: base64Image,
       },
-    ],
-    // FIX: The generationConfig must be a top-level property, NOT inside contents.
+    });
+  }
+
+  const payload = {
+    contents: [{ role: "user", parts: parts }],
     generationConfig: {
       responseMimeType: "application/json",
-      responseSchema: responseSchema,
+      responseSchema: schema,
     },
   };
 
@@ -86,7 +138,6 @@ async function callGeminiApiWithBackoff(userPrompt, base64Image) {
       });
 
       if (!response.ok) {
-        // If the error is not a rate limit (429), throw immediately
         if (response.status !== 429) {
           const errorBody = await response.text();
           throw new Error(
@@ -111,7 +162,6 @@ async function callGeminiApiWithBackoff(userPrompt, base64Image) {
       );
     }
 
-    // Exponential backoff
     if (attempt < MAX_RETRIES - 1) {
       await new Promise((resolve) =>
         setTimeout(resolve, Math.pow(2, attempt) * 1000)
@@ -130,15 +180,16 @@ async function callGeminiApiWithBackoff(userPrompt, base64Image) {
  * @returns {Promise<string>} Extracted license plate number.
  */
 async function extractLicensePlate(base64Image) {
-  // UPDATED PROMPT: Giving explicit format examples to guide the model.
   const prompt =
     "Identify the license plate number visible in this image. This is an Indian auto rickshaw plate from Maharashtra, starting with MH. The plate format is MH-XX-YY-ZZZZ. Output the plate string without any spaces or dashes (e.g., MH02DK6801). Strictly output the result as a JSON object matching the provided schema, containing only the capitalized alphanumeric license plate text. Do not include any other text or explanation in the response.";
 
-  const jsonResponse = await callGeminiApiWithBackoff(prompt, base64Image);
+  const jsonResponse = await callGeminiApiWithBackoff(
+    prompt,
+    base64Image,
+    licensePlateSchema
+  );
 
-  // Ensure the output is clean and capitalized
   if (jsonResponse && jsonResponse.licensePlate) {
-    // The cleanup regex here handles removal of spaces/dashes if the model includes them
     return String(jsonResponse.licensePlate)
       .toUpperCase()
       .replace(/[^A-Z0-9]/g, "");
@@ -147,6 +198,84 @@ async function extractLicensePlate(base64Image) {
   throw new Error("Could not extract a valid license plate from the image.");
 }
 
+/**
+ * NEW: Public function to find a multimodal route (Shared Auto + Train/Walk)
+ * @param {number} startLat - Start Latitude
+ * @param {number} startLng - Start Longitude
+ * @param {number} endLat - End Latitude
+ * @param {number} endLng - End Longitude
+ * @param {Array<Object>} standsData - Internal list of auto stands/routes.
+ * @returns {Promise<Object>} Multimodal route object from Gemini.
+ */
+async function findMultimodalRoute(
+  startLat,
+  startLng,
+  endLat,
+  endLng,
+  standsData
+) {
+  // Format the internal stands data into a concise string for the model
+  const standMap = standsData
+    .map((s) => {
+      const routes = s.routes
+        .map(
+          (r) => `${r.destination} (Fare: ₹${r.fare}, Time: ${r.travel_time})`
+        )
+        .join("; ");
+      return `Stand: ${s.name} (Lat: ${s.latitude}, Lng: ${s.longitude}, Routes: [${routes}])`;
+    })
+    .join("\n");
+
+  // Detailed instruction for the model
+  const systemPrompt = `
+    You are an expert route planner for Mumbai, India. Your task is to generate the most optimal multimodal travel plan between a specific start and end coordinate in Mumbai.
+    The primary mode of travel is either a combination of walking and using the Mumbai Western Line local train network, OR a combination of walking and using the provided Shared Auto Stands network.
+    You must only use modes: WALK, TRAIN (Western Line), SHARED_AUTO (using the stands data), or AUTO (direct private auto, only if other options are poor).
+
+    Use the following information:
+    1.  **Coordinates:** Start(${startLat}, ${startLng}) to End(${endLat}, ${endLng}).
+    2.  **External Knowledge:** You must rely on your knowledge of Mumbai's geography, the Western Line train route/stations (e.g., Borivali, Andheri, Bandra, Dadar, Churchgate), typical fares (Train: ₹5-₹20; Walk: 15 min/km), and estimated travel times.
+    3.  **Shared Auto Stand Data:** Use the provided list of auto stands and their fixed routes for any SHARED_AUTO steps. Use walking steps to connect to the nearest suitable train station OR shared auto stand.
+
+    Plan the route in detail and output the result strictly in the specified JSON format. Ensure all costs and times are realistic for Mumbai public transport.
+  `;
+
+  const userQuery = `
+    Find the best multimodal route from Start Latitude: ${startLat}, Longitude: ${startLng} to End Latitude: ${endLat}, Longitude: ${endLng}.
+    Prioritize routes using the Western Line train or multiple Shared Auto stands.
+    Here is the list of available Share Auto Stands and their routes:
+    ---
+    ${standMap}
+    ---
+    Calculate the total time and cost by summing the details from the individual steps.
+  `;
+
+  const prompt = `${systemPrompt}
+
+${userQuery}`;
+
+  // Call Gemini with the specific schema for route planning
+  const jsonResponse = await callGeminiApiWithBackoff(
+    prompt,
+    null,
+    routeSchema
+  );
+
+  if (jsonResponse) {
+    // Sanitize output (e.g., round costs/time)
+    jsonResponse.totalTravelTimeMinutes = Math.round(
+      jsonResponse.totalTravelTimeMinutes
+    );
+    jsonResponse.estimatedCostRupees = Math.round(
+      jsonResponse.estimatedCostRupees
+    );
+    return jsonResponse;
+  }
+
+  throw new Error("Gemini failed to generate a multimodal route plan.");
+}
+
 module.exports = {
   extractLicensePlate,
+  findMultimodalRoute,
 };

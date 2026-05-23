@@ -1,0 +1,15 @@
+flowchart TD
+  A["Start/end coordinates"] --> B["Coordinate validation"]
+  B --> C["Fetch stands and fixed routes from MySQL"]
+  C --> D["Direct auto deterministic estimate"]
+  C --> E["Score stand-route candidates"]
+  C --> F["Build Gemini structured prompt"]
+  F --> G["Gemini JSON route"]
+  G --> H["Validate modes, stand names, destinations, cost/time totals"]
+  H --> I{"Grounding acceptable?"}
+  I -->|Yes| J["Return grounded AI route"]
+  I -->|No or API unavailable| K["Return deterministic fallback"]
+  D --> L["API response routes[]"]
+  E --> L
+  J --> L
+  K --> L

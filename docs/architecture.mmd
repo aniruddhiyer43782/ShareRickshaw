@@ -1,0 +1,8 @@
+flowchart LR
+  Passenger["Passenger Browser\nHTML/CSS/JS + Leaflet"] -->|REST| API["Node.js Express API"]
+  Driver["Driver Browser\nDashboard + Socket.IO"] -->|REST + WebSocket| API
+  Admin["Admin Panel"] -->|CRUD REST| API
+  API -->|SQL| DB["MySQL\nusers, stands, routes, bookings, safety logs"]
+  API -->|Structured JSON prompt| Gemini["Gemini API\nroute + plate extraction"]
+  Passenger -->|OSRM visualization| OSRM["Public OSRM route service"]
+  API -->|SMTP| Email["Emergency contact email"]
