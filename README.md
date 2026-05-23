@@ -73,4 +73,24 @@ Latest offline seeded-data result:
 - IEEE evidence summary: `evaluation/results/ieee_evidence_summary_2026-05-23T14-45-16-782Z.md`
 - scatter figure: `docs/figures/trust_composite_scatter_2026-05-23T14-45-16-782Z.svg`
 
+## Paper draft
+
+Generated IEEE-style draft:
+
+- `docs/ShareRickshaw_IEEE_camera_ready_draft.docx`
+- `docs/ShareRickshaw_IEEE_camera_ready_draft.pdf`
+
+Regenerate the draft after evidence updates:
+
+```powershell
+py -m pip install -r docs\paper_requirements.txt
+py docs\build_ieee_paper.py
+```
+
+The paper includes embedded architecture, trust-ranking pipeline, and scatter-plot figures. It does not fabricate usability-study results; collect real responses with `docs/MICRO_USER_STUDY_PACKET.md`, enter them in `evaluation/user_study_responses_template.csv`, then run:
+
+```powershell
+node evaluation\run_user_study_analysis.js evaluation\user_study_responses_template.csv
+```
+
 Label this honestly as offline seeded-data evaluation. Then score routes with `evaluation/route_quality_rubric.md`, fill ALPR results in `evaluation/alpr_results_template.csv`, and use `evaluation/user_study_form.md` for a small formative user study.

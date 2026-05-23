@@ -4,7 +4,9 @@
   "description": "",
   "main": "map.js",
   "scripts": {
-    "test": "node evaluation/test_route_planner_service.js && node evaluation/run_offline_route_evaluation.js && node evaluation/run_ieee_evidence_analysis.js"
+    "test": "node evaluation/test_route_planner_service.js && node evaluation/run_offline_route_evaluation.js && node evaluation/run_ieee_evidence_analysis.js",
+    "paper": "py docs/build_ieee_paper.py",
+    "user-study": "node evaluation/run_user_study_analysis.js evaluation/user_study_responses_template.csv"
   },
   "repository": {
     "type": "git",
